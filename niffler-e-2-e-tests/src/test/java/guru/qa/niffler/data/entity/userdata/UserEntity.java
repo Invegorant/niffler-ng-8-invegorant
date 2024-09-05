@@ -29,9 +29,9 @@ public class UserEntity implements Serializable {
         userEntity.setFirstname(user.firstname());
         userEntity.setSurname(user.surname());
         userEntity.setFullname(user.fullname());
-        userEntity.setPhoto(user.photo());
+        userEntity.setPhoto(user.photo() != null ? user.photo() : null);
+        userEntity.setPhotoSmall(user.photoSmall() != null ? user.photoSmall() : null);
 
-        userEntity.setPhotoSmall(user.photoSmall());
         return userEntity;
     }
 }

@@ -35,16 +35,7 @@ public class JdbcTest {
     void successfulXaTransactionTest() {
         UserDbClient userDbClient = new UserDbClient();
         String username = RandomDataUtils.randomUsername();
-        userDbClient.createUser(
-                new AuthUserJson(
-                        null,
-                        username,
-                        DEFAULT_PASSWORD,
-                        true,
-                        true,
-                        true,
-                        true
-                ),
+        userDbClient.createUserSpringJdbc(
                 new UserJson(
                         null,
                         username,
@@ -63,16 +54,7 @@ public class JdbcTest {
         UserDbClient userDbClient = new UserDbClient();
         String existedUsernameInDb = DEFAULT_USERNAME;
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> userDbClient.createUser(
-                        new AuthUserJson(
-                                null,
-                                RandomDataUtils.randomUsername(),
-                                DEFAULT_PASSWORD,
-                                true,
-                                true,
-                                true,
-                                true
-                        ),
+                () -> userDbClient.createUserSpringJdbc(
                         new UserJson(
                                 null,
                                 existedUsernameInDb, //уже есть в бд, будет ошибка
@@ -86,23 +68,5 @@ public class JdbcTest {
                 ));
         assertTrue(exception.getMessage()
                 .contains("Key (username)=(" + existedUsernameInDb + ") already exists."));
-    }
-
-    @Test
-    void springJdbcTest() {
-        UserDbClient usersDbClient = new UserDbClient();
-        UserJson user = usersDbClient.createUserSpringJdbc(
-                new UserJson(
-                        null,
-                        RandomDataUtils.randomUsername(),
-                        RandomDataUtils.randomName(),
-                        RandomDataUtils.randomSurname(),
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null
-                )
-        );
-        System.out.println(user);
     }
 }

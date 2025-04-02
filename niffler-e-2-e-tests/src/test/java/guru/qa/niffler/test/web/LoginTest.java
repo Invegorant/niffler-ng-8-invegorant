@@ -1,12 +1,14 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@WebTest
 @Feature("Авторизация")
-public class LoginTests extends AbstractTest {
+public class LoginTest extends AbstractTest {
 
     @Test
     @DisplayName("Авторизация - Успешная авторизация")

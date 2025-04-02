@@ -1,10 +1,12 @@
 package guru.qa.niffler.test.web;
 
 import com.github.javafaker.Faker;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@WebTest
 @Feature("Регистрация")
 public class RegistryTest extends AbstractTest {
 

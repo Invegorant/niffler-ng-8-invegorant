@@ -64,7 +64,7 @@ public class UsersQueueExtension implements
     @Override
     public void beforeTestExecution(ExtensionContext context) {
         Arrays.stream(context.getRequiredTestMethod().getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
                 .map(p -> p.getAnnotation(UserType.class))
                 .forEach(ut -> {
                     Optional<StaticUser> user = Optional.empty();
@@ -95,8 +95,10 @@ public class UsersQueueExtension implements
                 context.getUniqueId(),
                 Map.class
         );
-        for (Map.Entry<UserType, StaticUser> entry : users.entrySet()) {
-            entry.getKey().value().getUsersQueue().add(entry.getValue());
+        if (users != null) {
+            for (Map.Entry<UserType, StaticUser> entry : users.entrySet()) {
+                entry.getKey().value().getUsersQueue().add(entry.getValue());
+            }
         }
     }
 

@@ -1,11 +1,13 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.jupiter.annotation.Spend;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 
+@WebTest
 public class SpendingTest extends AbstractTest {
 
     @Spend(

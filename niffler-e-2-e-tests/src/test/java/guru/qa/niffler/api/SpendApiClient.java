@@ -45,7 +45,6 @@ public class SpendApiClient {
     public SpendJson addSpend(SpendJson spend) {
         return execute(spendApi.addSpend(spend), 201);
     }
-    //ToDo добавить для остальных методов
 
     public SpendJson editSpend(SpendJson spend) {
         return execute(spendApi.editSpend(spend), 200);

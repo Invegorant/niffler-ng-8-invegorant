@@ -3,8 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,14 +71,14 @@ public class RegisterPage {
     }
 
     public RegisterPage checkUserNameInput(String usernameValue) {
-        assertEquals(usernameInput.val(), usernameValue,
-                "Заполненное поле Username должно иметь значение " + usernameValue);
+        usernameInput.shouldHave(value(usernameValue)
+                .because("Заполненное поле Username должно иметь значение " + usernameValue));
         return this;
     }
 
     public RegisterPage checkPasswordInput(String passwordValue) {
-        assertEquals(passwordInput.val(), passwordValue,
-                "Заполненное поле Password должно иметь значение " + passwordValue);
+        passwordInput.shouldHave(value(passwordValue)
+                .because("Заполненное поле Password должно иметь значение " + passwordValue));
         return this;
     }
 

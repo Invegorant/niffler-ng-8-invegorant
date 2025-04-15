@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class ProfilePage extends AbstractPage {
+public class ProfilePage {
 
     private final SelenideElement uploadNewPictureBtn = $("label[class='image__input-label']");
     private final SelenideElement usernameInput = $("input[name='username']");

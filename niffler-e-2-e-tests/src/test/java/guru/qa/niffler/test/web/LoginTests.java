@@ -1,13 +1,12 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.page.AbstractPage;
 import guru.qa.niffler.page.LoginPage;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Feature("Авторизация")
-public class LoginTests extends AbstractPage {
+public class LoginTests extends AbstractTest {
 
     @Test
     @DisplayName("Авторизация - Успешная авторизация")
@@ -23,7 +22,7 @@ public class LoginTests extends AbstractPage {
     void auth_userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
         openLoginPage()
                 .doLogin(DEFAULT_USERNAME, "wrong_password");
-        new LoginPage().assertError("Неверные учетные данные пользователя");
+        assertError("Неверные учетные данные пользователя");
     }
 
     @Test
@@ -46,7 +45,7 @@ public class LoginTests extends AbstractPage {
     @DisplayName("Авторизация - Пустое поле пароль")
     void auth_userShouldStayOnLoginPageAfterLoginWithEmptyPasswordField() {
         openLoginPage()
-                .doLogin(AbstractPage.DEFAULT_USERNAME, null);
+                .doLogin(AbstractTest.DEFAULT_USERNAME, null);
         new LoginPage().assertLoginPageIsOpened();
     }
 

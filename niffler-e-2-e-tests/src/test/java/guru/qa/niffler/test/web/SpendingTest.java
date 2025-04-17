@@ -1,15 +1,12 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.jupiter.annotation.Spend;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
-import guru.qa.niffler.jupiter.annotation.Spend;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.page.AbstractPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 
-public class SpendingTest extends AbstractPage {
+public class SpendingTest extends AbstractTest {
 
     @Spend(
             username = DEFAULT_USERNAME,

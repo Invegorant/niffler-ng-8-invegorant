@@ -2,13 +2,12 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.page.AbstractPage;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Feature("Профиль")
-public class ProfileTest extends AbstractPage {
+public class ProfileTest extends AbstractTest {
 
     @Category(
             username = DEFAULT_USERNAME,

@@ -1,6 +1,8 @@
 package guru.qa.niffler.jupiter.extension;
 
 import io.qameta.allure.Allure;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -45,19 +47,18 @@ public class UsersQueueExtension implements
     public @interface UserType {
         Type value() default Type.EMPTY;
 
+        @Getter
+        @AllArgsConstructor
         enum Type {
-            EMPTY, WITH_FRIEND, WITH_INCOME_REQUEST, WITH_OUTCOME_REQUEST
+            EMPTY(EMPTY_USERS),
+            WITH_FRIEND(WITH_FRIEND_USERS),
+            WITH_INCOME_REQUEST(WITH_INCOME_REQUEST_USERS),
+            WITH_OUTCOME_REQUEST(WITH_OUTCOME_REQUEST_USERS);
+
+            private final Queue<StaticUser> usersQueue;
         }
     }
 
-    private Optional<StaticUser> poolUserFromQueueByUserType(UserType userType) {
-        return switch (userType.value()) {
-            case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-            case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-            case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-            case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
-        };
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -69,7 +70,7 @@ public class UsersQueueExtension implements
                     Optional<StaticUser> user = Optional.empty();
                     StopWatch sw = StopWatch.createStarted();
                     while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                        user = poolUserFromQueueByUserType(ut);
+                        user = Optional.ofNullable(ut.value().getUsersQueue().poll());
                     }
                     Allure.getLifecycle().updateTestCase(testCase ->
                             testCase.setStart(new Date().getTime())
@@ -95,13 +96,7 @@ public class UsersQueueExtension implements
                 Map.class
         );
         for (Map.Entry<UserType, StaticUser> entry : users.entrySet()) {
-            switch (entry.getKey().value()) {
-                case EMPTY -> EMPTY_USERS.add(entry.getValue());
-                case WITH_FRIEND -> WITH_FRIEND_USERS.add(entry.getValue());
-                case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(entry.getValue());
-                case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(entry.getValue());
-            }
-
+            entry.getKey().value().getUsersQueue().add(entry.getValue());
         }
     }
 

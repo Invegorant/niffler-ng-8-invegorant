@@ -1,9 +1,10 @@
 package guru.qa.niffler.jupiter.extension;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.api.SpendApiClient;
-import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.utils.RandomDataUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -20,16 +21,17 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
      */
     @Override
     public void beforeEach(ExtensionContext context) {
-        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
+                .filter(annotation -> ArrayUtils.isNotEmpty(annotation.categories()))
                 .ifPresent(annotation -> {
                     CategoryJson categoryJson = new CategoryJson(
                             null,
-                            new Faker().commerce().department(),
+                            RandomDataUtils.randomCategoryName(),
                             annotation.username(),
                             false
                     );
                     CategoryJson createdCategory = spendApiClient.addCategory(categoryJson);
-                    if (annotation.archived()) {
+                    if (annotation.categories()[0].archived()) {
                         CategoryJson archivedCategory = new CategoryJson(
                                 createdCategory.id(),
                                 createdCategory.name(),
@@ -48,7 +50,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
     @Override
     public void afterEach(ExtensionContext context) {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (!category.archived()) {
+        if (category != null && !category.archived()) {
             spendApiClient.updateCategory(
                     new CategoryJson(category.id(), category.name(), category.username(), true)
             );

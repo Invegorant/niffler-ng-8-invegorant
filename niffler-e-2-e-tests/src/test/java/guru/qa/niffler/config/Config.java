@@ -7,21 +7,22 @@ public interface Config {
     }
 
     String frontUrl();
-  String authUrl();
 
-  String authJdbcUrl();
+    String authUrl();
 
-  String gatewayUrl();
+    String authJdbcUrl();
 
-  String userdataUrl();
+    String gatewayUrl();
 
-  String userdataJdbcUrl();
+    String userdataUrl();
 
-  String spendUrl();
+    String userdataJdbcUrl();
 
-  String spendJdbcUrl();
+    String spendUrl();
 
-  String currencyJdbcUrl();
+    String spendJdbcUrl();
 
-  String ghUrl();
+    String currencyJdbcUrl();
+
+    String ghUrl();
 }

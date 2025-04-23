@@ -6,6 +6,8 @@ import guru.qa.niffler.service.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_USERNAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -129,5 +131,20 @@ public class JdbcTest {
                 ));
         assertTrue(exception.getMessage()
                 .contains("Key (username)=(" + existedUsernameInDb + ") already exists."));
+    }
+
+    @ValueSource(strings = {
+            "valentin-10"
+    })
+    @ParameterizedTest
+    void hibernateCreateUserSuccessTest(String uname) {
+
+        UserJson user = usersDbClient.createUser(
+                uname,
+                "12345"
+        );
+
+        usersDbClient.addIncomeInvitation(user, 1);
+        usersDbClient.addOutcomeInvitation(user, 1);
     }
 }

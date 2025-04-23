@@ -114,15 +114,17 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     private AuthUserEntity convertResultSetToAuthUserEntity(ResultSet rs) {
         try {
-            return new AuthUserEntity(
-                    rs.getObject("id", UUID.class),
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    rs.getBoolean("enabled"),
-                    rs.getBoolean("account_non_expired"),
-                    rs.getBoolean("account_non_locked"),
-                    rs.getBoolean("credentials_non_expired")
-            );
+            AuthUserEntity authUserEntity = new AuthUserEntity();
+
+            authUserEntity.setId(rs.getObject("id", UUID.class));
+            authUserEntity.setUsername(rs.getString("username"));
+            authUserEntity.setPassword(rs.getString("password"));
+            authUserEntity.setEnabled(rs.getBoolean("enabled"));
+            authUserEntity.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+            authUserEntity.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+            authUserEntity.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+
+            return authUserEntity;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

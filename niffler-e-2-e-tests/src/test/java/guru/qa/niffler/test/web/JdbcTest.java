@@ -28,6 +28,7 @@ public class JdbcTest {
                         null,
                         CurrencyValues.RUB,
                         null,
+                        null,
                         null
                 )
         );
@@ -45,6 +46,7 @@ public class JdbcTest {
                         null,
                         null,
                         CurrencyValues.RUB,
+                        null,
                         null,
                         null
                 )
@@ -64,6 +66,7 @@ public class JdbcTest {
                         null,
                         CurrencyValues.RUB,
                         null,
+                        null,
                         null
                 )
         );
@@ -82,6 +85,7 @@ public class JdbcTest {
                         null,
                         CurrencyValues.RUB,
                         null,
+                        null,
                         null
                 )
         );
@@ -98,6 +102,7 @@ public class JdbcTest {
                         null,
                         null,
                         CurrencyValues.RUB,
+                        null,
                         null,
                         null
                 )
@@ -117,6 +122,7 @@ public class JdbcTest {
                                 null,
                                 null,
                                 CurrencyValues.RUB,
+                                null,
                                 null,
                                 null
                         )

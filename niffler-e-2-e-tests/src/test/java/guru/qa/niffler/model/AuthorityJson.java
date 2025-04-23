@@ -20,7 +20,7 @@ public record AuthorityJson(
         return new AuthorityJson(
                 authority.getId(),
                 authority.getAuthority(),
-                authority.getUserId()
+                authority.getUser().getId()
         );
     }
 }

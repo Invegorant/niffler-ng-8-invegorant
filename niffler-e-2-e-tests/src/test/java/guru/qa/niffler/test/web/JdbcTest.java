@@ -1,38 +1,90 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.AuthUserJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.service.SpendDbClient;
-import org.junit.jupiter.api.Disabled;
+import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.AuthDbClient;
+import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
+import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_USERNAME;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
 public class JdbcTest {
 
-  @Test
-  void txTest() {
-    SpendDbClient spendDbClient = new SpendDbClient();
+    @Test
+    void successfulTransactionTest() {
+        AuthDbClient authDbClient = new AuthDbClient();
+        authDbClient.createUser(
+                new AuthUserJson(
+                        null,
+                        RandomDataUtils.randomUsername(),
+                        DEFAULT_PASSWORD,
+                        true,
+                        true,
+                        true,
+                        true
+                )
+        );
+    }
 
-    SpendJson spend = spendDbClient.createSpend(
-        new SpendJson(
-            null,
-            new Date(),
-            new CategoryJson(
-                null,
-                "cat-name-tx-2",
-                "duck",
-                false
-            ),
-            CurrencyValues.RUB,
-            1000.0,
-            "spend-name-tx",
-            null
-        )
-    );
+    @Test
+    void successfulXaTransactionTest() {
+        UserDbClient userDbClient = new UserDbClient();
+        String username = RandomDataUtils.randomUsername();
+        userDbClient.createUser(
+                new AuthUserJson(
+                        null,
+                        username,
+                        DEFAULT_PASSWORD,
+                        true,
+                        true,
+                        true,
+                        true
+                ),
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+    }
 
-    System.out.println(spend);
-  }
+    @Test
+    void failedXaTransactionTest() {
+        UserDbClient userDbClient = new UserDbClient();
+        String existedUsernameInDb = DEFAULT_USERNAME;
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> userDbClient.createUser(
+                        new AuthUserJson(
+                                null,
+                                RandomDataUtils.randomUsername(),
+                                DEFAULT_PASSWORD,
+                                true,
+                                true,
+                                true,
+                                true
+                        ),
+                        new UserJson(
+                                null,
+                                existedUsernameInDb, //уже есть в бд, будет ошибка
+                                null,
+                                null,
+                                null,
+                                CurrencyValues.RUB,
+                                null,
+                                null
+                        )
+                ));
+        assertTrue(exception.getMessage()
+                .contains("Key (username)=(" + existedUsernameInDb + ") already exists."));
+    }
 }

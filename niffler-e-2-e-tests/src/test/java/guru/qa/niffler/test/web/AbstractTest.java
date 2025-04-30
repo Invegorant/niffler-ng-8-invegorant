@@ -2,11 +2,9 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.components.Header;
 import guru.qa.niffler.page.components.MenuComponent;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
@@ -14,7 +12,6 @@ import static com.codeborne.selenide.Selenide.$;
 /**
  * Класс предназначен как набор часто используемых тестовых методов/данных
  */
-@ExtendWith(BrowserExtension.class)
 public abstract class AbstractTest {
 
     private static final Config CFG = Config.getInstance();

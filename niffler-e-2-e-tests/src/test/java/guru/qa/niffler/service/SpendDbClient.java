@@ -7,13 +7,13 @@ import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.TransactionIsolation;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.Databases.transaction;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 public class SpendDbClient {
 
@@ -32,7 +32,7 @@ public class SpendDbClient {
                     );
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -46,7 +46,7 @@ public class SpendDbClient {
                             });
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -58,7 +58,7 @@ public class SpendDbClient {
                     }).toList();
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -68,7 +68,7 @@ public class SpendDbClient {
                     new SpendDaoJdbc(connection).deleteSpend(SpendEntity.fromJson(spend));
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -78,7 +78,7 @@ public class SpendDbClient {
                     return CategoryJson.fromEntity(new CategoryDaoJdbc(connection).createCategory(ce));
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -89,7 +89,7 @@ public class SpendDbClient {
                             .map(CategoryJson::fromEntity);
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -100,7 +100,7 @@ public class SpendDbClient {
                             .map(CategoryJson::fromEntity);
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -112,7 +112,7 @@ public class SpendDbClient {
                             .toList();
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -121,7 +121,7 @@ public class SpendDbClient {
                     new CategoryDaoJdbc(connection).deleteCategory(CategoryEntity.fromJson(category));
                 },
                 CFG.spendJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 }

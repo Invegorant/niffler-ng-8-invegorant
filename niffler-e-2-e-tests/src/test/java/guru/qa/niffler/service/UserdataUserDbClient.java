@@ -3,13 +3,13 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.UserdataDaoJdbc;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.model.TransactionIsolation;
 import guru.qa.niffler.model.UserJson;
 
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.Databases.transaction;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 public class UserdataUserDbClient {
 
@@ -19,7 +19,7 @@ public class UserdataUserDbClient {
         return transaction(connection -> {
                     return UserJson.fromEntity(new UserdataDaoJdbc(connection).createUser(UserEntity.fromJson(user)));
                 }, CFG.userdataJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -30,7 +30,7 @@ public class UserdataUserDbClient {
                             .map(UserJson::fromEntity);
                 },
                 CFG.userdataJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -41,7 +41,7 @@ public class UserdataUserDbClient {
                             .map(UserJson::fromEntity);
                 },
                 CFG.userdataJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 
@@ -50,7 +50,7 @@ public class UserdataUserDbClient {
                     new UserdataDaoJdbc(connection).deleteUser(UserEntity.fromJson(user));
                 },
                 CFG.userdataJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 }

@@ -7,12 +7,12 @@ import guru.qa.niffler.data.dao.impl.UserdataDaoJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.AuthUserJson;
-import guru.qa.niffler.model.TransactionIsolation;
 import guru.qa.niffler.model.UserJson;
 
 import java.util.UUID;
 
 import static guru.qa.niffler.data.Databases.xaTransaction;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 public class UserDbClient {
 
@@ -36,6 +36,6 @@ public class UserDbClient {
                 CFG.userdataJdbcUrl()
         );
 
-        return xaTransaction(TransactionIsolation.READ_UNCOMMITTED, xaFunAuthUser, xaFunUser);
+        return xaTransaction(TRANSACTION_READ_UNCOMMITTED, xaFunAuthUser, xaFunUser);
     }
 }

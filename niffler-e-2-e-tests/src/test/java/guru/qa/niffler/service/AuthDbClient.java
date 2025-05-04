@@ -7,9 +7,9 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.AuthUserJson;
 import guru.qa.niffler.model.Authority;
-import guru.qa.niffler.model.TransactionIsolation;
 
 import static guru.qa.niffler.data.Databases.transaction;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 public class AuthDbClient {
 
@@ -29,7 +29,7 @@ public class AuthDbClient {
                     return AuthUserJson.fromEntity(authUser);
                 },
                 CFG.authJdbcUrl(),
-                TransactionIsolation.READ_UNCOMMITTED
+                TRANSACTION_READ_UNCOMMITTED
         );
     }
 }

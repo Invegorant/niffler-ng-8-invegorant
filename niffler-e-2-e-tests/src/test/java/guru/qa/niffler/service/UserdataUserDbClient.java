@@ -1,7 +1,7 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.impl.UserdataDaoJdbc;
+import guru.qa.niffler.data.dao.impl.jdbc.UserDataDaoJdbc;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.UserJson;
 
@@ -17,7 +17,7 @@ public class UserdataUserDbClient {
 
     public UserJson createUser(UserJson user) {
         return transaction(connection -> {
-                    return UserJson.fromEntity(new UserdataDaoJdbc(connection).createUser(UserEntity.fromJson(user)));
+                    return UserJson.fromEntity(new UserDataDaoJdbc(connection).createUser(UserEntity.fromJson(user)));
                 }, CFG.userdataJdbcUrl(),
                 TRANSACTION_READ_UNCOMMITTED
         );
@@ -25,7 +25,7 @@ public class UserdataUserDbClient {
 
     public Optional<UserJson> findUserByUsername(String username) {
         return transaction(connection -> {
-                    return new UserdataDaoJdbc(connection)
+                    return new UserDataDaoJdbc(connection)
                             .findByUsername(username)
                             .map(UserJson::fromEntity);
                 },
@@ -36,7 +36,7 @@ public class UserdataUserDbClient {
 
     public Optional<UserJson> findUserById(UUID id) {
         return transaction(connection -> {
-                    return new UserdataDaoJdbc(connection)
+                    return new UserDataDaoJdbc(connection)
                             .findById(id)
                             .map(UserJson::fromEntity);
                 },
@@ -47,7 +47,7 @@ public class UserdataUserDbClient {
 
     public void deleteUser(UserJson user) {
         transaction(connection -> {
-                    new UserdataDaoJdbc(connection).deleteUser(UserEntity.fromJson(user));
+                    new UserDataDaoJdbc(connection).deleteUser(UserEntity.fromJson(user));
                 },
                 CFG.userdataJdbcUrl(),
                 TRANSACTION_READ_UNCOMMITTED

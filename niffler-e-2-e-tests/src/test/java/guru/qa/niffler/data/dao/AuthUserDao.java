@@ -12,5 +12,5 @@ public interface AuthUserDao {
 
     Optional<AuthUserEntity> findByUsername(String username);
 
-    void delete(AuthUserEntity authUser);
+    boolean delete(AuthUserEntity authUser);
 }

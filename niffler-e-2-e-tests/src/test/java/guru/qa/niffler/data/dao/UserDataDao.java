@@ -5,12 +5,12 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserdataDao {
+public interface UserDataDao {
     UserEntity createUser(UserEntity user);
 
     Optional<UserEntity> findById(UUID id);
 
     Optional<UserEntity> findByUsername(String username);
 
-    void deleteUser(UserEntity user);
+    boolean deleteUser(UserEntity user);
 }

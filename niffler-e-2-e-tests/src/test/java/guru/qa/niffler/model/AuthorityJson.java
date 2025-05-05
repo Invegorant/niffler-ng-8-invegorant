@@ -14,13 +14,13 @@ public record AuthorityJson(
         @JsonProperty("authority")
         Authority authority,
         @JsonProperty("user")
-        AuthUserJson user) {
+        UUID user) {
 
     public static @Nonnull AuthorityJson fromJson(@Nonnull AuthorityEntity authority) {
         return new AuthorityJson(
                 authority.getId(),
                 authority.getAuthority(),
-                AuthUserJson.fromEntity(authority.getUser())
+                authority.getUserId()
         );
     }
 }

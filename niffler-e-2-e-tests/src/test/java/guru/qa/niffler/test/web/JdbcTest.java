@@ -5,7 +5,6 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.AuthDbClient;
 import guru.qa.niffler.service.UserDbClient;
-import guru.qa.niffler.service.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
@@ -91,16 +90,15 @@ public class JdbcTest {
 
     @Test
     void springJdbcTest() {
-        UsersDbClient usersDbClient = new UsersDbClient();
+        UserDbClient usersDbClient = new UserDbClient();
         UserJson user = usersDbClient.createUserSpringJdbc(
                 new UserJson(
                         null,
-                        "valentin-5",
-                        null,
-                        null,
+                        RandomDataUtils.randomUsername(),
+                        RandomDataUtils.randomName(),
+                        RandomDataUtils.randomSurname(),
                         null,
                         CurrencyValues.RUB,
-                        null,
                         null,
                         null
                 )

@@ -16,7 +16,7 @@ public abstract class AbstractTest {
 
     private static final Config CFG = Config.getInstance();
     protected static final String DEFAULT_USERNAME = "Invegorant";
-    protected static final String DEFAULT_PASSWORD = "12345";
+    public static final String DEFAULT_PASSWORD = "12345";
 
     public LoginPage openLoginPage() {
         return Selenide.open(CFG.frontUrl(), LoginPage.class);

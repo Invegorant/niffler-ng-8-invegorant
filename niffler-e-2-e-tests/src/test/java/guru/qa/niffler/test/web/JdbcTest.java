@@ -1,41 +1,25 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.model.AuthUserJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.AuthDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_USERNAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JdbcTest {
 
-    @Test
-    void successfulTransactionTest() {
-        AuthDbClient authDbClient = new AuthDbClient();
-        authDbClient.createUser(
-                new AuthUserJson(
-                        null,
-                        RandomDataUtils.randomUsername(),
-                        DEFAULT_PASSWORD,
-                        true,
-                        true,
-                        true,
-                        true
-                )
-        );
-    }
+    private final UserDbClient userDbClient = new UserDbClient();
 
     @Test
-    void successfulXaTransactionTest() {
-        UserDbClient userDbClient = new UserDbClient();
+    @DisplayName("Spring JDBC -> Создание УЗ с транзакцией")
+    void springJdbcTxSuccessTest() {
         String username = RandomDataUtils.randomUsername();
-        userDbClient.createUserSpringJdbc(
+        userDbClient.createUserSpringTx(
                 new UserJson(
                         null,
                         username,
@@ -50,11 +34,82 @@ public class JdbcTest {
     }
 
     @Test
+    @DisplayName("Spring JDBC -> Создание УЗ без транзакции")
+    void springJdbcSuccessTest() {
+        String username = RandomDataUtils.randomUsername();
+        userDbClient.createUserSpringNoTx(
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("JDBC -> Создание УЗ с транзакцией")
+    void jdbcTxSuccessTest() {
+        String username = RandomDataUtils.randomUsername();
+        userDbClient.createUserJdbcTx(
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("JDBC -> Создание УЗ без транзакции")
+    void jdbcSuccessTest() {
+        String username = RandomDataUtils.randomUsername();
+        userDbClient.createUserJdbcNoTx(
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Spring JDBC -> Создание УЗ с ChainedTransactionManager")
+    void springChainedTxTest() {
+        userDbClient.createUserSpringJdbcChainedTx(
+                new UserJson(
+                        null,
+                        RandomDataUtils.randomUsername(),
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("JDBC -> Неуспешное создание УЗ")
     void failedXaTransactionTest() {
-        UserDbClient userDbClient = new UserDbClient();
         String existedUsernameInDb = DEFAULT_USERNAME;
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> userDbClient.createUserSpringJdbc(
+                () -> userDbClient.createUserJdbcTx(
                         new UserJson(
                                 null,
                                 existedUsernameInDb, //уже есть в бд, будет ошибка

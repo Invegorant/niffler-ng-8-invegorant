@@ -3,25 +3,20 @@ package guru.qa.niffler.data.dao.impl.spring;
 import guru.qa.niffler.data.dao.UserDataDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-//ToDo пофиксить для остальных методов
-public class UserDataDaoSpringJdbc implements UserDataDao {
-
-    private final JdbcTemplate jdbcTemplate;
-    private static final UdUserEntityRowMapper rowMapper = UdUserEntityRowMapper.instance;
-
+public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> implements UserDataDao {
 
     public UserDataDaoSpringJdbc(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        super(dataSource, UdUserEntityRowMapper.instance);
     }
 
     @Override
@@ -66,6 +61,14 @@ public class UserDataDaoSpringJdbc implements UserDataDao {
                 rowMapper,
                 username);
         return Optional.ofNullable(entity);
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return jdbcTemplate.query(
+                "SELECT * FROM \"user\"",
+                rowMapper
+        );
     }
 
     @Override

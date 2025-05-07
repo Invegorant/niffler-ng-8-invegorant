@@ -10,7 +10,8 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class AuthAuthorityEntityRowMapper implements RowMapper<AuthorityEntity> {
-    public static final AuthAuthorityEntityRowMapper instance = new AuthAuthorityEntityRowMapper();
+
+    public static final AuthAuthorityEntityRowMapper INSTANCE = new AuthAuthorityEntityRowMapper();
 
     private AuthAuthorityEntityRowMapper() {
     }

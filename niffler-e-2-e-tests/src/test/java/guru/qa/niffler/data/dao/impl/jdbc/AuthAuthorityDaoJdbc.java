@@ -49,13 +49,25 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
             ps.execute();
             try (ResultSet rs = ps.getResultSet()) {
                 while (rs.next()) {
-                    AuthorityEntity ae = new AuthorityEntity();
-                    ae.setId(rs.getObject("id", UUID.class));
-                    ae.setAuthority(Authority.valueOf(rs.getString("authority")));
-                    AuthUserEntity user = new AuthUserEntity();
-                    user.setId(rs.getObject("user_id", UUID.class));
-                    ae.setUserId(user.getId());
-                    aeList.add(ae);
+                    aeList.add(convertResultSetToAuthorityEntity(rs));
+                }
+                return aeList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthorityEntity> findAll() {
+        List<AuthorityEntity> aeList = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM authority"
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    aeList.add(convertResultSetToAuthorityEntity(rs));
                 }
                 return aeList;
             }
@@ -71,6 +83,22 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
             ps.setObject(1, authority.getId());
 
             return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private AuthorityEntity convertResultSetToAuthorityEntity(ResultSet rs) {
+        try {
+            AuthorityEntity ae = new AuthorityEntity();
+
+            ae.setId(rs.getObject("id", UUID.class));
+            ae.setAuthority(Authority.valueOf(rs.getString("authority")));
+            AuthUserEntity user = new AuthUserEntity();
+            user.setId(rs.getObject("user_id", UUID.class));
+            ae.setUserId(user.getId());
+
+            return ae;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

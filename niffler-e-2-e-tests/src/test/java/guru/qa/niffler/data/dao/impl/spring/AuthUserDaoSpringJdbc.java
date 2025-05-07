@@ -3,24 +3,21 @@ package guru.qa.niffler.data.dao.impl.spring;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 //ToDo пофиксить для остальных методов
-public class AuthUserDaoSpringJdbc implements AuthUserDao {
-
-    private final JdbcTemplate jdbcTemplate;
-    private static final AuthUserEntityRowMapper rowMapper = AuthUserEntityRowMapper.instance;
+public class AuthUserDaoSpringJdbc extends AbstractDaoSpring<AuthUserEntity> implements AuthUserDao {
 
     public AuthUserDaoSpringJdbc(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        super(dataSource, AuthUserEntityRowMapper.instance);
     }
 
     @Override
@@ -64,6 +61,14 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
                 rowMapper,
                 username);
         return Optional.ofNullable(entity);
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        return jdbcTemplate.query(
+                "SELECT * FROM \"user\"",
+                rowMapper
+        );
     }
 
     @Override

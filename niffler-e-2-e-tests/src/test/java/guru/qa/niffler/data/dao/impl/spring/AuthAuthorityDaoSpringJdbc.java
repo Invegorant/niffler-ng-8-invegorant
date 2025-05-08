@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl.spring;
 
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.mapper.AuthAuthorityEntityRowMapper;
+import guru.qa.niffler.data.mapper.row_mapper.AuthAuthorityEntityRowMapper;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
 import javax.sql.DataSource;

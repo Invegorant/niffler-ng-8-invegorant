@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl.spring;
 
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
+import guru.qa.niffler.data.mapper.row_mapper.SpendEntityRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 

@@ -14,7 +14,11 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.UserdataUserRepository;
+import guru.qa.niffler.data.repository.impl.jdbc.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.jdbc.UserdataUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.spring.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.impl.spring.UserdataUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
@@ -45,8 +49,13 @@ public class UserDbClient {
     private final UserDataDao userDataDaoSpring = new UserDataDaoSpringJdbc(dataSource(CFG.userdataJdbcUrl()));
     private final AuthAuthorityDao authAuthorityDaoSpring = new AuthAuthorityDaoSpringJdbc(dataSource(CFG.authJdbcUrl()));
 
-    /**** REPOSITORIES ****/
-    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
+    /**** REPOSITORIES - JDBC ****/
+    private final AuthUserRepository authUserRepositoryJdbc = new AuthUserRepositoryJdbc();
+    private final UserdataUserRepository userdataUserRepositoryJdbc = new UserdataUserRepositoryJdbc();
+
+    /**** REPOSITORIES - SPRING JDBC ****/
+    private final AuthUserRepository authUserRepositorySpring = new AuthUserRepositorySpringJdbc();
+    private final UserdataUserRepository userdataUserRepositorySpring = new UserdataUserRepositorySpringJdbc();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new JdbcTransactionManager(DataSources.dataSource(CFG.authJdbcUrl()))
@@ -172,7 +181,7 @@ public class UserDbClient {
                         }
                 ).toList()
         );
-        authUserRepository.create(authUser);
+        authUserRepositorySpring.create(authUser);
 
         return UserJson.fromEntity(
                 userDataDaoSpring.createUser(UserEntity.fromJson(user)),

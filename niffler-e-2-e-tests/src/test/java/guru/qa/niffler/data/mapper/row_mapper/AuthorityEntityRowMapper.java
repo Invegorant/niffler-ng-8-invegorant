@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.mapper;
+package guru.qa.niffler.data.mapper.row_mapper;
 
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.Authority;

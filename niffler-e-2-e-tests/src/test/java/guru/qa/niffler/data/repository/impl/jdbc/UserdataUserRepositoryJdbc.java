@@ -90,11 +90,13 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             ps.setObject(1, requester.getId());
             ps.setObject(2, addressee.getId());
             ps.setString(3, ACCEPTED.name());
-            ps.executeUpdate();
+            ps.addBatch();
 
             ps.setObject(1, addressee.getId());
             ps.setObject(2, requester.getId());
             ps.setString(3, ACCEPTED.name());
+            ps.addBatch();
+
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

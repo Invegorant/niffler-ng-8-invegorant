@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,22 +55,24 @@ public class UserdataUserRepositorySpringJdbc extends AbstractDaoSpring<UserEnti
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        "SELECT * FROM \"user\" WHERE id = ?",
-                        rowMapper,
-                        id
+        return Optional.of(Objects.requireNonNull(
+                        jdbcTemplate.queryForObject(
+                                "SELECT * FROM \"user\" WHERE id = ?",
+                                rowMapper,
+                                id
+                        )
                 )
         );
     }
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        "SELECT * FROM \"user\" WHERE username = ?",
-                        rowMapper,
-                        username
+        return Optional.of(Objects.requireNonNull(
+                        jdbcTemplate.queryForObject(
+                                "SELECT * FROM \"user\" WHERE username = ?",
+                                rowMapper,
+                                username
+                        )
                 )
         );
     }

@@ -34,7 +34,7 @@ import java.util.Arrays;
 import static guru.qa.niffler.data.tpl.DataSources.dataSource;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 
-public class UserDbClient {
+public class UsersDbClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();

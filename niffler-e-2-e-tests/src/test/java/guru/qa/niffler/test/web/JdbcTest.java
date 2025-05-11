@@ -2,7 +2,7 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JdbcTest {
 
-    private final UserDbClient userDbClient = new UserDbClient();
+    private final UsersDbClient usersDbClient = new UsersDbClient();
 
     @Test
     @DisplayName("Spring JDBC -> Создание УЗ с транзакцией")
     void springJdbcTxSuccessTest() {
         String username = RandomDataUtils.randomUsername();
-        userDbClient.createUserSpringTx(
+        usersDbClient.createUserSpringTx(
                 new UserJson(
                         null,
                         username,
@@ -38,7 +38,7 @@ public class JdbcTest {
     @DisplayName("Spring JDBC -> Создание УЗ без транзакции")
     void springJdbcSuccessTest() {
         String username = RandomDataUtils.randomUsername();
-        userDbClient.createUserSpringNoTx(
+        usersDbClient.createUserSpringNoTx(
                 new UserJson(
                         null,
                         username,
@@ -57,7 +57,7 @@ public class JdbcTest {
     @DisplayName("JDBC -> Создание УЗ с транзакцией")
     void jdbcTxSuccessTest() {
         String username = RandomDataUtils.randomUsername();
-        userDbClient.createUserJdbcTx(
+        usersDbClient.createUserJdbcTx(
                 new UserJson(
                         null,
                         username,
@@ -76,7 +76,7 @@ public class JdbcTest {
     @DisplayName("JDBC -> Создание УЗ без транзакции")
     void jdbcSuccessTest() {
         String username = RandomDataUtils.randomUsername();
-        userDbClient.createUserJdbcNoTx(
+        usersDbClient.createUserJdbcNoTx(
                 new UserJson(
                         null,
                         username,
@@ -94,7 +94,7 @@ public class JdbcTest {
     @Test
     @DisplayName("Spring JDBC -> Создание УЗ с ChainedTransactionManager")
     void springChainedTxTest() {
-        userDbClient.createUserSpringJdbcChainedTx(
+        usersDbClient.createUserSpringJdbcChainedTx(
                 new UserJson(
                         null,
                         RandomDataUtils.randomUsername(),
@@ -114,7 +114,7 @@ public class JdbcTest {
     void failedXaTransactionTest() {
         String existedUsernameInDb = DEFAULT_USERNAME;
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> userDbClient.createUserJdbcTx(
+                () -> usersDbClient.createUserJdbcTx(
                         new UserJson(
                                 null,
                                 existedUsernameInDb, //уже есть в бд, будет ошибка

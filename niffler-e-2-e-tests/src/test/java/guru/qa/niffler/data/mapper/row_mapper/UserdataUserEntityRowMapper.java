@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.mapper;
+package guru.qa.niffler.data.mapper.row_mapper;
 
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
@@ -8,11 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class UdUserEntityRowMapper implements RowMapper<UserEntity> {
+public class UserdataUserEntityRowMapper implements RowMapper<UserEntity> {
 
-  public static final UdUserEntityRowMapper instance = new UdUserEntityRowMapper();
+  public static final UserdataUserEntityRowMapper instance = new UserdataUserEntityRowMapper();
 
-  private UdUserEntityRowMapper() {
+  private UserdataUserEntityRowMapper() {
   }
 
   @Override

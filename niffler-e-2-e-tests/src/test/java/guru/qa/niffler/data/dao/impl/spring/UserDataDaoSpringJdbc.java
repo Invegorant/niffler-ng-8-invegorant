@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl.spring;
 
 import guru.qa.niffler.data.dao.UserDataDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
+import guru.qa.niffler.data.mapper.row_mapper.UserdataUserEntityRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> implements UserDataDao {
 
     public UserDataDaoSpringJdbc(DataSource dataSource) {
-        super(dataSource, UdUserEntityRowMapper.instance);
+        super(dataSource, UserdataUserEntityRowMapper.instance);
     }
 
     @Override

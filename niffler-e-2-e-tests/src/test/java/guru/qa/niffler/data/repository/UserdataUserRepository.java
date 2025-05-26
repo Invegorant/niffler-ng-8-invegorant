@@ -13,7 +13,11 @@ public interface UserdataUserRepository {
 
     Optional<UserEntity> findByUsername(String username);
 
-    void addInvitation(UserEntity requester, UserEntity addressee);
+    UserEntity update(UserEntity user);
+
+    void sendInvitation(UserEntity requester, UserEntity addressee);
 
     void addFriend(UserEntity requester, UserEntity addressee);
+
+    void removeFriend(UserEntity user);
 }

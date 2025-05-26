@@ -25,4 +25,8 @@ public class RandomDataUtils {
     public static String randomSentence(int wordsCount) {
         return FAKER.lorem().sentence(wordsCount);
     }
+
+    public static int randomCount() {
+        return FAKER.random().nextInt(1, 10);
+    }
 }

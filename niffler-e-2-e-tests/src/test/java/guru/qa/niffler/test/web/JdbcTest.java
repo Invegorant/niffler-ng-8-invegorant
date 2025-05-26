@@ -2,13 +2,14 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UsersDbClient;
+import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_USERNAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -144,7 +145,36 @@ public class JdbcTest {
                 "12345"
         );
 
-        usersDbClient.addIncomeInvitation(user, 1);
-        usersDbClient.addOutcomeInvitation(user, 1);
+        usersDbClient.createIncomeInvitations(user, 1);
+        usersDbClient.createOutcomeInvitations(user, 1);
+    }
+
+    @Test
+    @DisplayName("Hibernate -> UsersClient - Income invitation")
+    void hibernateUsersClientCreateIncomeInvitationsSuccessTest() {
+        UserJson user = usersDbClient.createUser(RandomDataUtils.randomUsername(), DEFAULT_PASSWORD);
+        usersDbClient.createIncomeInvitations(user, RandomDataUtils.randomCount());
+    }
+
+    @Test
+    @DisplayName("Hibernate -> UsersClient - Outcome invitation")
+    void hibernateUsersClientCreateOutcomeInvitationsSuccessTest() {
+        UserJson user = usersDbClient.createUser(RandomDataUtils.randomUsername(), DEFAULT_PASSWORD);
+        usersDbClient.createOutcomeInvitations(user, RandomDataUtils.randomCount());
+    }
+
+    @Test
+    @DisplayName("Hibernate -> UsersClient - Create friends")
+    void hibernateUsersClientCreateFriendsSuccessTest() {
+        UserJson user = usersDbClient.createUser(RandomDataUtils.randomUsername(), DEFAULT_PASSWORD);
+        usersDbClient.createFriends(user, RandomDataUtils.randomCount());
+    }
+
+    @Test
+    @DisplayName("Hibernate -> UsersClient - Remove")
+    void hibernateUsersClientRemoveSuccessTest() {
+        UserJson user = usersDbClient.createUser(RandomDataUtils.randomUsername(), DEFAULT_PASSWORD);
+        usersDbClient.createFriends(user, RandomDataUtils.randomCount());
+        usersDbClient.remove(user);
     }
 }

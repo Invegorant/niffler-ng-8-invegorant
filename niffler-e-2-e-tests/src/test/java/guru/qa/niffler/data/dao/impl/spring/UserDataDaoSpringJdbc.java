@@ -10,13 +10,14 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> implements UserDataDao {
 
     public UserDataDaoSpringJdbc(DataSource dataSource) {
-        super(dataSource, UserdataUserEntityRowMapper.instance);
+        super(dataSource, UserdataUserEntityRowMapper.INSTANCE);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> impleme
             return ps;
         }, kh);
 
-        final UUID generatedKey = (UUID) kh.getKeys().get("id");
+        final UUID generatedKey = (UUID) Objects.requireNonNull(kh.getKeys()).get("id");
         user.setId(generatedKey);
         return user;
     }

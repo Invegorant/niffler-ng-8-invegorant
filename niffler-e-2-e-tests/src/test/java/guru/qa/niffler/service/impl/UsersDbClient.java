@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
@@ -15,17 +15,19 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.hibernate.AuthUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.hibernate.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.jdbc.AuthUserRepositoryJdbc;
 import guru.qa.niffler.data.repository.impl.jdbc.UserdataUserRepositoryJdbc;
 import guru.qa.niffler.data.repository.impl.spring.AuthUserRepositorySpringJdbc;
 import guru.qa.niffler.data.repository.impl.spring.UserdataUserRepositorySpringJdbc;
-import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.utils.RandomDataUtils;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -33,12 +35,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.DataSources.dataSource;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
-public class UsersDbClient {
+public class UsersDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -171,35 +174,10 @@ public class UsersDbClient {
         );
     }
 
-    private UserJson createUserRepository(UserJson user) {
-        AuthUserEntity authUser = new AuthUserEntity();
-        authUser.setUsername(user.username());
-        authUser.setPassword(pe.encode(DEFAULT_PASSWORD));
-        authUser.setEnabled(true);
-        authUser.setAccountNonExpired(true);
-        authUser.setAccountNonLocked(true);
-        authUser.setCredentialsNonExpired(true);
-        authUser.setAuthorities(
-                Arrays.stream(Authority.values()).map(
-                        e -> {
-                            AuthorityEntity ae = new AuthorityEntity();
-                            ae.setUser(authUser);
-                            ae.setAuthority(e);
-                            return ae;
-                        }
-                ).toList()
-        );
-        authUserRepositorySpring.create(authUser);
-
-        return UserJson.fromEntity(
-                userDataDaoSpring.createUser(UserEntity.fromJson(user)),
-                null
-        );
-    }
-
+    @Override
     public UserJson createUser(String username, String password) {
         return xaTransactionTemplate.execute(() -> {
-                    AuthUserEntity authUser = authUserEntity(username, password);
+                    AuthUserEntity authUser = createAuthUserEntityRepository(username, password);
                     authUserRepositoryHibernate.create(authUser);
                     return UserJson.fromEntity(
                             userdataUserRepositoryHibernate.createUser(userEntity(username)),
@@ -209,48 +187,72 @@ public class UsersDbClient {
         );
     }
 
-    public void addIncomeInvitation(UserJson targetUser, int count) {
-//        if (count > 0) {
-//            UserEntity targetEntity = userdataUserRepositoryHibernate.findById(
-//                    targetUser.id()
-//            ).orElseThrow();
-//
-//            for (int i = 0; i < count; i++) {
-//                xaTransactionTemplate.execute(() -> {
-//                            String username = randomUsername();
-//                            AuthUserEntity authUser = authUserEntity(username, "12345");
-//                    authUserRepositoryHibernate.create(authUser);
-//                            UserEntity adressee = userdataUserRepositoryHibernate.createUser(userEntity(username));
-//                    userdataUserRepositoryHibernate.addIncomeInvitation(targetEntity, adressee);
-//                            return null;
-//                        }
-//                );
-//            }
-//        }
+    @Override
+    public void createIncomeInvitations(UserJson targetUser, int count) {
+        if (count > 0) {
+            UserEntity targetEntity = findUserEntity(targetUser);
+
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                            String username = RandomDataUtils.randomUsername();
+                            AuthUserEntity authUser = createAuthUserEntityRepository(username, DEFAULT_PASSWORD);
+                            authUserRepositoryHibernate.create(authUser);
+                            UserEntity addressee = userdataUserRepositoryHibernate.createUser(userEntity(username));
+                            userdataUserRepositoryHibernate.sendInvitation(addressee, targetEntity);
+                            return null;
+                        }
+                );
+            }
+        }
     }
 
-    public void addOutcomeInvitation(UserJson targetUser, int count) {
-//        if (count > 0) {
-//            UserEntity targetEntity = userdataUserRepositoryHibernate.findById(
-//                    targetUser.id()
-//            ).orElseThrow();
-//
-//            for (int i = 0; i < count; i++) {
-//                xaTransactionTemplate.execute(() -> {
-//                            String username = randomUsername();
-//                            AuthUserEntity authUser = authUserEntity(username, "12345");
-//                            authUserRepositoryHibernate.create(authUser);
-//                            UserEntity adressee = userdataUserRepositoryHibernate.createUser(userEntity(username));
-//                            userdataUserRepositoryHibernate.addOutcomeInvitation(targetEntity, adressee);
-//                            return null;
-//                        }
-//                );
-//            }
-//        }
+    @Override
+    public void createOutcomeInvitations(UserJson targetUser, int count) {
+        if (count > 0) {
+            UserEntity targetEntity = findUserEntity(targetUser);
+
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                            String username = RandomDataUtils.randomUsername();
+                            AuthUserEntity authUser = createAuthUserEntityRepository(username, DEFAULT_PASSWORD);
+                            authUserRepositoryHibernate.create(authUser);
+                            UserEntity addressee = userdataUserRepositoryHibernate.createUser(userEntity(username));
+                            userdataUserRepositoryHibernate.sendInvitation(targetEntity, addressee);
+                            return null;
+                        }
+                );
+            }
+        }
     }
 
-    void addFriend(UserJson targetUser, int count) {
+    @Override
+    public void createFriends(UserJson targetUser, int count) {
+        if (count > 0) {
+            UserEntity targetEntity = findUserEntity(targetUser);
 
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                            String username = RandomDataUtils.randomUsername();
+                            AuthUserEntity authUser = createAuthUserEntityRepository(username, DEFAULT_PASSWORD);
+                            authUserRepositoryHibernate.create(authUser);
+                            UserEntity addressee = userdataUserRepositoryHibernate.createUser(userEntity(username));
+                            userdataUserRepositoryHibernate.addFriend(targetEntity, addressee);
+                            return null;
+                        }
+                );
+            }
+        }
+    }
+
+    @Override
+    public void remove(UserJson user) {
+        xaTransactionTemplate.execute(() -> {
+                    Optional<AuthUserEntity> authUserOpt = authUserRepositoryHibernate.findByUsername(user.username());
+                    authUserOpt.ifPresent(authUserRepositoryHibernate::remove);
+                    userdataUserRepositoryHibernate.removeFriend(UserEntity.fromJson(user));
+                    return null;
+                }
+        );
     }
 
     private UserEntity userEntity(String username) {
@@ -260,7 +262,7 @@ public class UsersDbClient {
         return ue;
     }
 
-    private AuthUserEntity authUserEntity(String username, String password) {
+    private AuthUserEntity createAuthUserEntityRepository(String username, String password) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);
         authUser.setPassword(pe.encode(password));
@@ -279,5 +281,24 @@ public class UsersDbClient {
                 ).toList()
         );
         return authUser;
+    }
+
+    private UserEntity findUserEntity(UserJson targetUser) {
+        UUID id = targetUser.id();
+        String username = targetUser.username();
+
+        if (id == null && username == null) {
+            throw new IllegalArgumentException("User ID and username cannot both be null");
+        }
+
+        Optional<UserEntity> entityOpt = (id != null)
+                ? userdataUserRepositoryHibernate.findById(id)
+                : Optional.empty();
+
+        return entityOpt.or(() ->
+                username != null
+                        ? userdataUserRepositoryHibernate.findByUsername(username)
+                        : Optional.empty()
+        ).orElseThrow(() -> new EntityNotFoundException("Target user not found by id or username"));
     }
 }

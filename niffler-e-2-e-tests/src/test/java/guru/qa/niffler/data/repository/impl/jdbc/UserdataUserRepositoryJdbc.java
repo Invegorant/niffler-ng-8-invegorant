@@ -113,23 +113,8 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             userPs.setObject(8, user.getId());
             userPs.executeUpdate();
 
-            for (FriendshipEntity fe : user.getFriendshipRequests()) {
-                friendShipPs.setObject(1, fe.getRequester().getId());
-                friendShipPs.setObject(2, fe.getAddressee().getId());
-                friendShipPs.setString(3, fe.getStatus().name());
-                friendShipPs.setString(4, fe.getStatus().name());
-                friendShipPs.addBatch();
-                friendShipPs.clearParameters();
-            }
-
-            for (FriendshipEntity fe : user.getFriendshipAddressees()) {
-                friendShipPs.setObject(1, fe.getRequester().getId());
-                friendShipPs.setObject(2, fe.getAddressee().getId());
-                friendShipPs.setString(3, fe.getStatus().name());
-                friendShipPs.setString(4, fe.getStatus().name());
-                friendShipPs.addBatch();
-                friendShipPs.clearParameters();
-            }
+            fillFriendshipPs(user.getFriendshipRequests(), friendShipPs);
+            fillFriendshipPs(user.getFriendshipAddressees(), friendShipPs);
             friendShipPs.executeBatch();
 
             return user;
@@ -256,5 +241,16 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             }
         }
         return friendshipEntities;
+    }
+
+    private void fillFriendshipPs(List<FriendshipEntity> user, PreparedStatement friendShipPs) throws SQLException {
+        for (FriendshipEntity fe : user) {
+            friendShipPs.setObject(1, fe.getRequester().getId());
+            friendShipPs.setObject(2, fe.getAddressee().getId());
+            friendShipPs.setString(3, fe.getStatus().name());
+            friendShipPs.setString(4, fe.getStatus().name());
+            friendShipPs.addBatch();
+            friendShipPs.clearParameters();
+        }
     }
 }

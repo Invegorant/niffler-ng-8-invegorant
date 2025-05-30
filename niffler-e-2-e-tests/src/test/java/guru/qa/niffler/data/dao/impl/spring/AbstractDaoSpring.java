@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 
-import static guru.qa.niffler.data.tpl.DataSources.dataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 /**
  * Класс предназначен для хранения и использования jdbcTemplate + rowMapper

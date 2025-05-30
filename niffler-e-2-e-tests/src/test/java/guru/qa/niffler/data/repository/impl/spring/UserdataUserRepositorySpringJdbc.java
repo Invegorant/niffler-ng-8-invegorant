@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
-import static guru.qa.niffler.data.tpl.DataSources.dataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class UserdataUserRepositorySpringJdbc extends AbstractDaoSpring<UserEntity> implements UserdataUserRepository {
 

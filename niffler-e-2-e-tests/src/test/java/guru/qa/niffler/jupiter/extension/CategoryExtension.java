@@ -1,19 +1,23 @@
 package guru.qa.niffler.jupiter.extension;
 
+import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CategoryExtension implements BeforeEachCallback, AfterEachCallback, ParameterResolver {
+public class CategoryExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
-    private final SpendDbClient spendDbClient = new SpendDbClient();
+    private final SpendClient spendClient = new SpendDbClient();
 
     /**
      * Перед выполнением теста проверяем наличие аннотации Category:
@@ -24,35 +28,57 @@ public class CategoryExtension implements BeforeEachCallback, AfterEachCallback,
     @Override
     public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
-                .filter(annotation -> ArrayUtils.isNotEmpty(annotation.categories()))
-                .ifPresent(annotation -> {
-                    CategoryJson categoryJson = new CategoryJson(
-                            null,
-                            RandomDataUtils.randomCategoryName(),
-                            annotation.username(),
-                            annotation.categories()[0].archived()
-                    );
-                    CategoryJson createdCategory = spendDbClient.createCategory(categoryJson);
-                    context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
-                });
-    }
+                .ifPresent(userAnno -> {
+                    if (ArrayUtils.isNotEmpty(userAnno.categories())) {
 
-    /**
-     * После выполнения теста проверяем, если категория не является архивной -> архивируем
-     */
-    @Override
-    public void afterEach(ExtensionContext context) {
-        Optional.ofNullable(context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
-                .ifPresent(spendDbClient::removeCategory);
+                        UserJson createdUser = UserExtension.createdUser();
+                        final String username = createdUser != null
+                                ? createdUser.username()
+                                : userAnno.username();
+
+                        final List<CategoryJson> createdCategories = new ArrayList<>();
+                        for (Category categoryAnno : userAnno.categories()) {
+                            final String categoryName = "".equals(categoryAnno.name())
+                                    ? RandomDataUtils.randomCategoryName()
+                                    : categoryAnno.name();
+
+                            CategoryJson category = new CategoryJson(
+                                    null,
+                                    categoryName,
+                                    username,
+                                    categoryAnno.archived()
+                            );
+                            createdCategories.add(
+                                    spendClient.createCategory(category)
+                            );
+                        }
+
+
+                        if (createdUser != null) {
+                            createdUser.testData().categories().addAll(
+                                    createdCategories
+                            );
+                        } else {
+                            context.getStore(NAMESPACE).put(
+                                    context.getUniqueId(),
+                                    createdCategories
+                            );
+                        }
+                    }
+                });
     }
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson.class);
+        return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson[].class);
     }
 
     @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
+    @SuppressWarnings("unchecked")
+    public CategoryJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return (CategoryJson[]) extensionContext.getStore(NAMESPACE)
+                .get(extensionContext.getUniqueId(), List.class)
+                .stream()
+                .toArray(CategoryJson[]::new);
     }
 }

@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.DataSources.dataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 
 public class UsersDbClient implements UsersClient {

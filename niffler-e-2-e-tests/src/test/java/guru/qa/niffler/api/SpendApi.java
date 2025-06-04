@@ -4,7 +4,6 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.*;
 
 import java.util.Date;
@@ -29,7 +28,7 @@ public interface SpendApi {
                                     @Query("to") Date to);
 
     @DELETE("/internal/spends/remove")
-    Call<Response<Void>> deleteSpends(@Query("username") String username,
+    Call<String> deleteSpends(@Query("username") String username,
                                       @Query("ids") List<String> ids);
 
     @POST("/internal/categories/add")

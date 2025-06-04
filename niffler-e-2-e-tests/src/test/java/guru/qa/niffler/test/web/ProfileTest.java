@@ -9,7 +9,6 @@ import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-//ToDo запустить этот класс и желательно все тесты (если все ок - коммититься и приступить к ДЗ
 @WebTest
 @Feature("Профиль")
 public class ProfileTest extends AbstractTest {
@@ -31,18 +30,13 @@ public class ProfileTest extends AbstractTest {
                 .categoryIsPresent(archivedCategory.name());
     }
 
-    @User(
-            username = DEFAULT_USERNAME,
-            categories = @Category(
-                    archived = false
-            )
-    )
+    @User(categories = @Category)
     @Test
     @DisplayName("Профиль - Отображение не архивной категории")
-    void profile_activeCategoryShouldPresentInCategoriesList(CategoryJson[] category) {
+    void profile_activeCategoryShouldPresentInCategoriesList(UserJson user) {
         openLoginPage()
-                .doLogin(DEFAULT_USERNAME, DEFAULT_PASSWORD)
+                .doLogin(user.username(), user.testData().password())
                 .openProfilePage()
-                .categoryIsPresent(category[0].name());
+                .categoryIsPresent(user.testData().categories().getFirst().name());
     }
 }

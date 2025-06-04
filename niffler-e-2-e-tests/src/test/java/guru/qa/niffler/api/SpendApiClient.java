@@ -4,19 +4,15 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.api.BaseApiClient;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class SpendApiClient {
+public class SpendApiClient extends BaseApiClient {
 
     private static final Config CFG = Config.getInstance();
 
@@ -28,19 +24,6 @@ public class SpendApiClient {
             .build();
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
-
-    private <T> T execute(Call<T> executeMethod, int expectedCode) {
-        final Response<T> response;
-        try {
-            response = executeMethod.execute();
-        } catch (IOException e) {
-            throw new AssertionError(e);
-        }
-
-        assertEquals(expectedCode, response.code());
-        return response.body();
-    }
-
 
     public SpendJson addSpend(SpendJson spend) {
         return execute(spendApi.addSpend(spend), 201);
@@ -58,7 +41,7 @@ public class SpendApiClient {
         return execute(spendApi.getSpends(username, filterCurrency, from, to), 200);
     }
 
-    public Response<Void> deleteSpends(String username, List<String> ids) {
+    public String deleteSpends(String username, List<String> ids) {
         return execute(spendApi.deleteSpends(username, ids), 200);
     }
 

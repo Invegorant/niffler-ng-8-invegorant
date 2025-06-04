@@ -51,7 +51,10 @@ public record UserJson(
                 new TestData(
                         password,
                         testData.categories(),
-                        testData.spendings()
+                        testData.spendings(),
+                        testData.friends(),
+                        testData.incomeInvitations(),
+                        testData.outcomeInvitations()
                 )
         );
     }

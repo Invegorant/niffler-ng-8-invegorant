@@ -15,8 +15,12 @@ public class AllPeoplePage {
     private final SelenideElement searchInput = $("input");
 
     public void checkOutcomeRequestToUser(String username) {
-        searchInput.setValue(username).pressEnter();
         getRowByUsername(username).$(byText("Waiting...")).shouldBe(visible);
+    }
+
+    public AllPeoplePage searchRequestByUsername(String username) {
+        searchInput.setValue(username).pressEnter();
+        return this;
     }
 
     private SelenideElement getRowByUsername(String username) {

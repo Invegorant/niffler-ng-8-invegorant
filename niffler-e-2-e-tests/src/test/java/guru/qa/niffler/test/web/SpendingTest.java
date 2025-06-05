@@ -22,12 +22,16 @@ public class SpendingTest extends AbstractTest {
     @Test
     void spendingDescriptionShouldBeUpdatedByTableAction(UserJson user) {
         final String newDescription = "Обучение Niffler NG";
+        final String username = user.username();
 
         openLoginPage()
-                .doLogin(user.username(), (user.testData().password()))
+                .doLogin(username, (user.testData().password()))
+                .searchRequestByUsername(username)
                 .editSpending(user.testData().spendings().getFirst().description())
                 .editDescription(newDescription);
 
-        new MainPage().checkThatTableContainsSpending(newDescription);
+        new MainPage()
+                .searchRequestByUsername(username)
+                .checkThatTableContainsSpending(newDescription);
     }
 }

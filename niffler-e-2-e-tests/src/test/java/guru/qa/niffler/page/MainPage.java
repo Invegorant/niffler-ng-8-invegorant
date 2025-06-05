@@ -35,7 +35,6 @@ public class MainPage {
     }
 
     public EditSpendingPage editSpending(String spendingDescription) {
-        searchInput.setValue(spendingDescription).pressEnter();
         tableRows.find(text(spendingDescription))
                 .$$("td")
                 .get(5)
@@ -53,8 +52,12 @@ public class MainPage {
     }
 
     public void checkThatTableContainsSpending(String spendingDescription) {
-        searchInput.setValue(spendingDescription).pressEnter();
         tableRows.find(text(spendingDescription))
                 .should(visible);
+    }
+
+    public MainPage searchRequestByUsername(String username) {
+        searchInput.setValue(username).pressEnter();
+        return this;
     }
 }

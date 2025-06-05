@@ -48,6 +48,7 @@ public class FriendsTest extends AbstractTest {
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
                 .openAllPeoplePage()
+                .searchRequestByUsername(user.username())
                 .checkOutcomeRequestToUser(user.testData().outcomeInvitations().getFirst().username());
     }
 }

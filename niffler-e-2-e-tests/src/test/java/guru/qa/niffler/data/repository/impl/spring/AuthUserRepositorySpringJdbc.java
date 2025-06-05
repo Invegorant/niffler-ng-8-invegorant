@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.DataSources.dataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class AuthUserRepositorySpringJdbc extends AbstractRepSpring<AuthUserEntity> implements AuthUserRepository {
 

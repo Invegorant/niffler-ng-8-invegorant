@@ -17,6 +17,7 @@ public class MainPage {
     private final SelenideElement historyOfSpendingsHeader = $(byText("History of Spendings"));
     private final SelenideElement statisticsHeader = $(byText("Statistics"));
     private final ElementsCollection tableRows = $$("#spendings tbody tr");
+    private final SelenideElement searchInput = $("input");
 
     public ProfilePage openProfilePage() {
         header.openMenu().selectMenuItem(MenuComponent.MenuItem.PROFILE);
@@ -50,8 +51,13 @@ public class MainPage {
         return this;
     }
 
-    public void checkThatTableContains(String spendingDescription) {
+    public void checkThatTableContainsSpending(String spendingDescription) {
         tableRows.find(text(spendingDescription))
                 .should(visible);
+    }
+
+    public MainPage searchRequestByUsername(String username) {
+        searchInput.setValue(username).pressEnter();
+        return this;
     }
 }

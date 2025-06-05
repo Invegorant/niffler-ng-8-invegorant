@@ -14,8 +14,10 @@ public class FriendsPage {
     private final ElementsCollection requestsTable = $$("[id='requests'] tr");
     private final ElementsCollection friendsTable = $$("[id='friends'] tr");
     private final SelenideElement noFriendsText = $(byText("There are no users yet"));
+    private final SelenideElement searchInput = $("input");
 
     public void checkFriendIsPresentInTable(String friend) {
+        searchInput.setValue(friend).pressEnter();
         friendsTable.find(text(friend)).shouldBe(visible);
     }
 
@@ -24,6 +26,7 @@ public class FriendsPage {
     }
 
     public void checkFriendRequestFromUser(String income) {
+        searchInput.setValue(income).pressEnter();
         requestsTable.find(text(income)).$(byText("Accept")).shouldBe(visible);
     }
 }

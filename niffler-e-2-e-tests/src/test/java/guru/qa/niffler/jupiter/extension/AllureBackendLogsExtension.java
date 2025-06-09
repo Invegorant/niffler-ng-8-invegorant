@@ -21,16 +21,26 @@ public class AllureBackendLogsExtension implements SuiteExtension {
         allureLifecycle.scheduleTestCase(new TestResult().setUuid(caseId).setName(caseName));
         allureLifecycle.startTestCase(caseId);
 
-        allureLifecycle.addAttachment(
-                "Niffler-auth log",
-                "text/html",
-                ".log",
-                Files.newInputStream(
-                        Path.of("./logs/niffler-auth/app.log")
-                )
-        );
+        addNifflerAttachment(allureLifecycle, "niffler-auth");
+        addNifflerAttachment(allureLifecycle, "niffler-currency");
+        addNifflerAttachment(allureLifecycle, "niffler-gateway");
+        addNifflerAttachment(allureLifecycle, "niffler-spend");
+        addNifflerAttachment(allureLifecycle, "niffler-userdata");
 
         allureLifecycle.stopTestCase(caseId);
         allureLifecycle.writeTestCase(caseId);
+
+    }
+
+    @SneakyThrows
+    private void addNifflerAttachment(AllureLifecycle allureLifecycle, String nifflerName) {
+        allureLifecycle.addAttachment(
+                nifflerName + " log",
+                "text/html",
+                ".log",
+                Files.newInputStream(
+                        Path.of("./logs/" + nifflerName + "/app.log")
+                )
+        );
     }
 }

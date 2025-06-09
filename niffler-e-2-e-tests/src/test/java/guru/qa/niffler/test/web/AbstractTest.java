@@ -2,7 +2,9 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.components.Header;
 import guru.qa.niffler.page.components.MenuComponent;
 
@@ -29,5 +31,14 @@ public abstract class AbstractTest {
 
     public void assertError(String errorText) {
         $("[class='form__error']").shouldHave(text(errorText));
+    }
+
+    public MainPage openMainPage() {
+        return Selenide.open(CFG.frontUrl(), MainPage.class);
+    }
+
+    public MainPage login(UserJson user) {
+        return openLoginPage()
+                .doLogin(user.username(), user.testData().password());
     }
 }

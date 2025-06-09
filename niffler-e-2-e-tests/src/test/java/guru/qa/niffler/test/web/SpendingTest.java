@@ -8,15 +8,10 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import static com.codeborne.selenide.Selenide.$;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @WebTest
 public class SpendingTest extends AbstractTest {
@@ -30,19 +25,32 @@ public class SpendingTest extends AbstractTest {
             )
     )
     @Test
-    void spendingDescriptionShouldBeUpdatedByTableAction(UserJson user) {
+    void spending_spendingDescriptionShouldBeUpdatedByTableAction(UserJson user) {
         final String newDescription = "Обучение Niffler NG";
-        final String username = user.username();
 
-        openLoginPage()
-                .doLogin(username, (user.testData().password()))
-                .searchRequestByUsername(username)
+        login(user)
                 .editSpending(user.testData().spendings().getFirst().description())
                 .editDescription(newDescription);
 
         new MainPage()
-                .searchRequestByUsername(username)
+                .searchSpending(newDescription)
                 .checkThatTableContainsSpending(newDescription);
+    }
+
+    @User(
+            spendings = @Spending(
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 50000,
+                    currency = CurrencyValues.RUB
+            )
+    )
+    @ScreenShotTest("img/expected-stats.png")
+    void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
+        openLoginPage()
+                .doLogin(user.username(), (user.testData().password()));
+
+        new MainPage().assertPicture(expected);
     }
 
     @User(
@@ -53,17 +61,77 @@ public class SpendingTest extends AbstractTest {
                     currency = CurrencyValues.RUB
             )
     )
-    @ScreenShotTest("img/expected-stat.png")
-    void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
-        openLoginPage()
-                .doLogin(user.username(), (user.testData().password()));
+    @ScreenShotTest("img/empty-stat.png")
+    void spending_shouldUpdateStatAfterSpendingIsRemoved(UserJson user, BufferedImage expected) throws IOException {
+        MainPage mainPage = login(user);
 
-        Selenide.sleep(5000L);
+        mainPage
+                .deleteSpending("Обучение Advanced 2.0")
+                .checkTableSize(0);
 
-        BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-        assertFalse(new ScreenDiffResult(
-                expected,
-                actual
-        ));
+        Selenide.refresh();
+
+        mainPage.assertPicture(expected);
+    }
+
+    @User(
+            spendings = @Spending(
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 79990, currency = CurrencyValues.RUB
+            )
+    )
+    @ScreenShotTest("img/expected-updated-stat.png")
+    void spending_shouldUpdateStatAfterSpendingIsUpdated(UserJson user, BufferedImage expected) throws IOException {
+        final int newAmount = 50000;
+        MainPage mainPage = login(user);
+
+        mainPage
+                .editSpending("Обучение Advanced 2.0")
+                .setNewSpendingAmount(newAmount)
+                .saveSpending();
+
+        mainPage
+                .waitForPieChartToLoad()
+                .checkBubblesHasText("Обучение " + newAmount)
+                .assertPicture(expected);
+    }
+
+    @User(
+            spendings = @Spending(
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 50000,
+                    currency = CurrencyValues.RUB
+            )
+    )
+    @ScreenShotTest("img/expected-stats.png")
+    void spending_shouldUpdateStatAfterCategoryIsArchived(UserJson user, BufferedImage expected) throws IOException {
+        login(user)
+                .openProfilePage()
+                .updateCategory("Обучение");
+
+        openMainPage()
+                .waitForPieChartToLoad()
+                .checkBubblesHasText("Archived " + "50000")
+                .assertPicture(expected);
+    }
+
+    @User(
+            spendings = @Spending(
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 50000,
+                    currency = CurrencyValues.RUB
+            )
+    )
+    @ScreenShotTest(
+            value = "img/expected-stats.png",
+            rewriteExpected = true
+    )
+    void spending_overwriteScreenshotTest(UserJson user, BufferedImage expected) throws IOException {
+        login(user)
+                .waitForPieChartToLoad()
+                .assertPicture(expected);
     }
 }

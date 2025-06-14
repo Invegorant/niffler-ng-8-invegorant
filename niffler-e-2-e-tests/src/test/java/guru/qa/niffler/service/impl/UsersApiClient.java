@@ -6,7 +6,9 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.service.api.BaseApiClient;
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -17,7 +19,14 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final String defaultPassword = DEFAULT_PASSWORD;
-    private final OkHttpClient client = new OkHttpClient.Builder().build();
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .addNetworkInterceptor(
+                    new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addNetworkInterceptor(
+                    new AllureOkHttp3()
+                            .setRequestTemplate("http-request.ftl")
+                            .setResponseTemplate("http-response.ftl")
+            ).build();
     private final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(CFG.spendUrl())
             .client(client)

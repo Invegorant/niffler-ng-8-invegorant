@@ -1,6 +1,8 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
+import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
@@ -8,6 +10,7 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.page.components.StatComponent;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -51,6 +54,43 @@ public class SpendingTest extends AbstractTest {
                 .doLogin(user.username(), (user.testData().password()));
 
         new MainPage().assertPicture(expected);
+        new StatComponent().checkBubbles(Color.yellow);
+    }
+
+    @User(
+            categories = {
+                    @Category(name = "Поездки"),
+                    @Category(name = "Ремонт", archived = true),
+                    @Category(name = "Страховка", archived = true)
+            },
+            spendings = {
+                    @Spending(
+                            category = "Поездки",
+                            description = "В Москву",
+                            amount = 9500,
+                            currency = CurrencyValues.RUB
+                    ),
+                    @Spending(
+                            category = "Ремонт",
+                            description = "Цемент",
+                            amount = 100,
+                            currency = CurrencyValues.RUB
+                    ),
+                    @Spending(
+                            category = "Страховка",
+                            description = "ОСАГО",
+                            amount = 3000,
+                            currency = CurrencyValues.RUB
+                    )
+            }
+    )
+    @ScreenShotTest(value = "img/expected-stat-archived.png")
+    void statComponentShouldDisplayArchivedCategories(UserJson user, BufferedImage expected) throws IOException {
+        login(user);
+        new StatComponent()
+                .checkStatisticBubblesContains("Поездки 9500 ₽", "Archived 3100 ₽")
+                .checkStatisticImage(expected)
+                .checkBubbles(Color.yellow, Color.green);
     }
 
     @User(

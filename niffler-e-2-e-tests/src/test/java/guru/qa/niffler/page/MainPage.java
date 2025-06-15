@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
 import guru.qa.niffler.page.components.Header;
 import guru.qa.niffler.page.components.MenuComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
@@ -94,9 +95,11 @@ public class MainPage {
                 img.screenshot()
         );
         assertFalse(new ScreenDiffResult(
-                actual,
-                expected
-        ));
+                        actual,
+                        expected
+                ),
+                ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
+        );
     }
 
     public MainPage deleteSpending(String description) {

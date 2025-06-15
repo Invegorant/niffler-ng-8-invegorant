@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import org.openqa.selenium.By;
 
@@ -105,9 +106,11 @@ public class ProfilePage {
 
         BufferedImage actual = ImageIO.read(Objects.requireNonNull(profilePic.screenshot()));
         assertFalse(new ScreenDiffResult(
-                actual,
-                expected
-        ));
+                        actual,
+                        expected
+                ),
+                ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
+        );
     }
 
     public ProfilePage updateCategory(String category) {

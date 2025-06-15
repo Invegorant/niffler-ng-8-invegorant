@@ -87,15 +87,15 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
 
         if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
             ScreenDif screenDif = new ScreenDif(
-                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
-                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
-                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
+                    "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getExpected())),
+                    "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getActual())),
+                    "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getDiff()))
             );
 
             Allure.addAttachment(
                     "Screenshot diff",
                     "application/vnd.allure.image.diff",
-                    objectMapper.writeValueAsString(screenDif)
+                    OBJECT_MAPPER.writeValueAsString(screenDif)
             );
         }
         throw throwable;

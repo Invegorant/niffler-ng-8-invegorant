@@ -7,7 +7,9 @@ import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.Bubble;
 import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.components.StatComponent;
@@ -41,12 +43,21 @@ public class SpendingTest extends AbstractTest {
     }
 
     @User(
-            spendings = @Spending(
-                    category = "Обучение",
-                    description = "Обучение Advanced 2.0",
-                    amount = 50000,
-                    currency = CurrencyValues.RUB
-            )
+            spendings = {@Spending
+                    (
+                            category = "Обучение",
+                            description = "Обучение Advanced 2.0",
+                            amount = 50000,
+                            currency = CurrencyValues.RUB
+                    ),
+                    @Spending
+                            (
+                                    category = "Путешествие",
+                                    description = "Путешествие в Сочи",
+                                    amount = 80000,
+                                    currency = CurrencyValues.RUB
+                            )
+            }
     )
     @ScreenShotTest("img/expected-stats.png")
     void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
@@ -54,7 +65,29 @@ public class SpendingTest extends AbstractTest {
                 .doLogin(user.username(), (user.testData().password()));
 
         new MainPage().assertPicture(expected);
-        new StatComponent().checkBubbles(Color.yellow);
+        new StatComponent()
+                .checkStatBubblesInAnyOrder(
+                        new Bubble(Color.green, "Обучение 50000 ₽"),
+                        new Bubble(Color.yellow, "Путешествие 80000 ₽"));
+    }
+
+    @User(
+            spendings = {@Spending(
+                    category = "Еда",
+                    description = "Сырки Б Ю Александров",
+                    amount = 1250.00,
+                    currency = CurrencyValues.RUB
+            ), @Spending(
+                    category = "Обучение",
+                    description = "Английский язык",
+                    amount = 1300.00,
+                    currency = CurrencyValues.RUB
+            )})
+    @Test
+    void checkSpendingTableTest(UserJson user) {
+        login(user);
+        new StatComponent()
+                .checkSpendTable(user.testData().spendings().toArray(SpendJson[]::new));
     }
 
     @User(

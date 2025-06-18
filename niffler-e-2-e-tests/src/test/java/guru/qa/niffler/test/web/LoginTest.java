@@ -6,7 +6,6 @@ import guru.qa.niffler.jupiter.extension.StaticBrowserExtension;
 import guru.qa.niffler.model.Browser;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.test.web.utils.BrowserConverterUtils;
-import guru.qa.niffler.test.web.utils.SelenideUtils;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,7 @@ public class LoginTest extends AbstractTest {
 
     @RegisterExtension
     private static final StaticBrowserExtension BROWSER_EXTENSION = new StaticBrowserExtension();
-    private final SelenideDriver chrome = new SelenideDriver(SelenideUtils.chromeConfig);
+    private final SelenideDriver chrome = new SelenideDriver(Browser.CHROME.config());
 
     @ParameterizedTest
     @EnumSource(Browser.class)

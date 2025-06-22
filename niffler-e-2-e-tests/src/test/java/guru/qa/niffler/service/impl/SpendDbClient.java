@@ -11,9 +11,13 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import org.openqa.selenium.NotFoundException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
 
     private static final Config CFG = Config.getInstance();
@@ -24,9 +28,10 @@ public class SpendDbClient implements SpendClient {
             CFG.spendJdbcUrl()
     );
 
+    @Nonnull
     @Override
     public SpendJson createSpend(SpendJson spend) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
                     SpendEntity spendEntity = SpendEntity.fromJson(spend);
                     CategoryEntity categoryEntity = spendEntity.getCategory();
                     if (categoryEntity.getId() == null) {
@@ -39,28 +44,31 @@ public class SpendDbClient implements SpendClient {
 
                     return SpendJson.fromEntity(spendRepository.createSpend(spendEntity));
                 }
-        );
+        ));
     }
 
+    @Nonnull
     @Override
     public SpendJson updateSpend(SpendJson spend) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             SpendEntity spendEntity = SpendEntity.fromJson(spend);
             return SpendJson.fromEntity(spendRepository.updateSpend(spendEntity));
-        });
+        }));
     }
 
+    @Nonnull
     @Override
     public CategoryJson createCategory(CategoryJson category) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             CategoryEntity categoryEntity = CategoryEntity.fromJson(category);
             return CategoryJson.fromEntity(spendRepository.createCategory(categoryEntity));
-        });
+        }));
     }
 
+    @Nonnull
     @Override
     public CategoryJson findCategoryById(UUID id) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             if (id == null) {
                 throw new IllegalArgumentException("Category id must not be null");
             }
@@ -69,12 +77,13 @@ public class SpendDbClient implements SpendClient {
                             .findFirst()
                             .orElseThrow(() -> new NotFoundException("Category is not found by id: " + id))
             );
-        });
+        }));
     }
 
+    @Nonnull
     @Override
     public CategoryJson findCategoryByUsernameAndCategoryName(String username, String name) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             if (username == null || name == null || username.isEmpty() || name.isEmpty()) {
                 throw new IllegalArgumentException("username and name must not be null or empty");
             }
@@ -83,12 +92,13 @@ public class SpendDbClient implements SpendClient {
                             .findFirst()
                             .orElseThrow(() -> new NotFoundException("Category is not found"))
             );
-        });
+        }));
     }
 
+    @Nonnull
     @Override
     public SpendJson findSpendById(UUID id) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             if (id == null) {
                 throw new IllegalArgumentException("Spend id must not be null");
             }
@@ -97,12 +107,13 @@ public class SpendDbClient implements SpendClient {
                             .findFirst()
                             .orElseThrow(() -> new NotFoundException("Spend is not found by id: " + id))
             );
-        });
+        }));
     }
 
+    @Nonnull
     @Override
     public SpendJson findSpendByUsernameAndSpendDescription(String username, String description) {
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             if (username == null || description == null || username.isEmpty() || description.isEmpty()) {
                 throw new IllegalArgumentException("username and description must not be null or empty");
             }
@@ -111,7 +122,7 @@ public class SpendDbClient implements SpendClient {
                             .findFirst()
                             .orElseThrow(() -> new NotFoundException("Spend is not found"))
             );
-        });
+        }));
     }
 
     @Override

@@ -9,12 +9,16 @@ import guru.qa.niffler.service.api.BaseApiClient;
 import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendApiClient extends BaseApiClient implements SpendClient {
 
     private static final Config CFG = Config.getInstance();
@@ -36,36 +40,44 @@ public class SpendApiClient extends BaseApiClient implements SpendClient {
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
 
+    @Nonnull
+    @NotNull
     @Override
     public SpendJson createSpend(SpendJson spend) {
         return execute(spendApi.addSpend(spend), 201);
     }
 
+    @NotNull
     @Override
     public SpendJson updateSpend(SpendJson spend) {
         return execute(spendApi.editSpend(spend), 200);
     }
 
+    @NotNull
     @Override
     public CategoryJson createCategory(CategoryJson category) {
         return execute(spendApi.addCategory(category), 200);
     }
 
+    @NotNull
     @Override
     public CategoryJson findCategoryById(UUID id) {
         throw new UnsupportedOperationException("NYI method findCategoryById");
     }
 
+    @NotNull
     @Override
     public CategoryJson findCategoryByUsernameAndCategoryName(String username, String name) {
         throw new UnsupportedOperationException("NYI method findCategoryByUsernameAndCategoryName");
     }
 
+    @NotNull
     @Override
     public SpendJson findSpendById(UUID id) {
         throw new UnsupportedOperationException("NYI method findById");
     }
 
+    @NotNull
     @Override
     public SpendJson findSpendByUsernameAndSpendDescription(String username, String description) {
         throw new UnsupportedOperationException("NYI method findSpendByUsernameAndSpendDescription");

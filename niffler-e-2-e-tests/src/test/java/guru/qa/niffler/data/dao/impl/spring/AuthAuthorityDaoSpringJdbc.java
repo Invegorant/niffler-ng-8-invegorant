@@ -3,14 +3,17 @@ package guru.qa.niffler.data.dao.impl.spring;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.row_mapper.AuthAuthorityEntityRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoSpringJdbc extends AbstractDaoSpring<AuthorityEntity> implements AuthAuthorityDao {
 
     public AuthAuthorityDaoSpringJdbc(DataSource dataSource) {
@@ -40,6 +43,7 @@ public class AuthAuthorityDaoSpringJdbc extends AbstractDaoSpring<AuthorityEntit
         );
     }
 
+    @NotNull
     @Override
     public List<AuthorityEntity> findByUserId(UUID id) {
         return jdbcTemplate.query(
@@ -48,6 +52,7 @@ public class AuthAuthorityDaoSpringJdbc extends AbstractDaoSpring<AuthorityEntit
                 id);
     }
 
+    @NotNull
     @Override
     public List<AuthorityEntity> findAll() {
         return jdbcTemplate.query(

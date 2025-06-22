@@ -9,12 +9,16 @@ import guru.qa.niffler.service.api.BaseApiClient;
 import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
+@ParametersAreNonnullByDefault
 public class UsersApiClient extends BaseApiClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
@@ -36,6 +40,7 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
     private final AuthApi authApi = retrofit.create(AuthApi.class);
     private final UserdataApi userdataApi = retrofit.create(UserdataApi.class);
 
+    @NotNull
     @Override
     public UserJson createUser(String username, String password) {
         execute(authApi.requestRegisterForm());

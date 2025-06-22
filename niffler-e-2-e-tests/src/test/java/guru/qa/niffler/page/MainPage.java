@@ -4,10 +4,12 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
-import guru.qa.niffler.page.components.Header;
-import guru.qa.niffler.page.components.MenuComponent;
+import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.page.component.MenuComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,7 +24,8 @@ import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.openqa.selenium.Keys.ENTER;
 
-public class MainPage {
+@ParametersAreNonnullByDefault
+public class MainPage extends BasePage<MainPage> {
 
     private final Header header = new Header();
     private final SelenideElement historyOfSpendingsHeader = $(byText("History of Spendings"));
@@ -35,21 +38,25 @@ public class MainPage {
     private final SelenideElement deleteBtn = $("#delete");
     private final SelenideElement popup = $("div[role='dialog']");
 
+    @Nonnull
     public ProfilePage openProfilePage() {
-        header.openMenu().selectMenuItem(MenuComponent.MenuItem.PROFILE);
+        openMenu().selectMenuItem(MenuComponent.MenuItem.PROFILE);
         return new ProfilePage();
     }
 
+    @Nonnull
     public FriendsPage openFriendsPage() {
-        header.openMenu().selectMenuItem(MenuComponent.MenuItem.FRIENDS);
+        openMenu().selectMenuItem(MenuComponent.MenuItem.FRIENDS);
         return new FriendsPage();
     }
 
+    @Nonnull
     public AllPeoplePage openAllPeoplePage() {
-        header.openMenu().selectMenuItem(MenuComponent.MenuItem.ALL_PEOPLE);
+        openMenu().selectMenuItem(MenuComponent.MenuItem.ALL_PEOPLE);
         return new AllPeoplePage();
     }
 
+    @Nonnull
     public EditSpendingPage editSpending(String spendingDescription) {
         tableRows.find(text(spendingDescription))
                 .$$("td")
@@ -62,6 +69,7 @@ public class MainPage {
         historyOfSpendingsHeader.shouldBe(visible);
     }
 
+    @Nonnull
     public MainPage checkStatisticsIsPresent() {
         statisticsHeader.shouldBe(visible);
         return this;
@@ -72,16 +80,19 @@ public class MainPage {
                 .should(visible);
     }
 
+    @Nonnull
     public MainPage searchSpending(String spending) {
         searchInput.setValue(spending).pressEnter();
         return this;
     }
 
+    @Nonnull
     public MainPage waitForPieChartToLoad() {
         img.is(image, Duration.ofSeconds(5));
         return this;
     }
 
+    @Nonnull
     public MainPage checkBubblesHasText(String description) {
         bubbles.find(text(description))
                 .should(visible);
@@ -102,6 +113,7 @@ public class MainPage {
         );
     }
 
+    @Nonnull
     public MainPage deleteSpending(String description) {
         searchInField(description);
         SelenideElement row = tableRows.find(text(description));
@@ -111,6 +123,7 @@ public class MainPage {
         return this;
     }
 
+    @Nonnull
     public MainPage checkTableSize(int expectedSize) {
         tableRows.should(size(expectedSize));
         return this;

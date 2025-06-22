@@ -12,7 +12,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.components.StatComponent;
+import guru.qa.niffler.page.component.StatComponent;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;

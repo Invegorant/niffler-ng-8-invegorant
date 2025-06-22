@@ -3,21 +3,25 @@ package guru.qa.niffler.data.dao.impl.spring;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.row_mapper.CategoryEntityRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class CategoryDaoSpringJdbc extends AbstractDaoSpring<CategoryEntity> implements CategoryDao {
 
     public CategoryDaoSpringJdbc(String jdbcUrl) {
         super(jdbcUrl, CategoryEntityRowMapper.INSTANCE);
     }
 
+    @NotNull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         KeyHolder kh = new GeneratedKeyHolder();
@@ -38,6 +42,7 @@ public class CategoryDaoSpringJdbc extends AbstractDaoSpring<CategoryEntity> imp
         return category;
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return Optional.ofNullable(jdbcTemplate.queryForObject(
@@ -48,6 +53,7 @@ public class CategoryDaoSpringJdbc extends AbstractDaoSpring<CategoryEntity> imp
         );
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
         return Optional.ofNullable(jdbcTemplate.queryForObject(
@@ -59,6 +65,7 @@ public class CategoryDaoSpringJdbc extends AbstractDaoSpring<CategoryEntity> imp
         );
     }
 
+    @NotNull
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
         return jdbcTemplate.query(
@@ -68,6 +75,7 @@ public class CategoryDaoSpringJdbc extends AbstractDaoSpring<CategoryEntity> imp
         );
     }
 
+    @NotNull
     @Override
     public List<CategoryEntity> findAll() {
         return jdbcTemplate.query(

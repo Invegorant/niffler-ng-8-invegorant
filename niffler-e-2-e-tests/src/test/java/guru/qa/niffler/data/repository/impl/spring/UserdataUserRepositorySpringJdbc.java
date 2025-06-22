@@ -8,7 +8,9 @@ import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.row_mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.ACCEPTED;
 import static guru.qa.niffler.data.entity.userdata.FriendshipStatus.PENDING;
 import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
+@ParametersAreNonnullByDefault
 public class UserdataUserRepositorySpringJdbc extends AbstractDaoSpring<UserEntity> implements UserdataUserRepository {
 
     private static final Config CFG = Config.getInstance();
@@ -28,11 +31,13 @@ public class UserdataUserRepositorySpringJdbc extends AbstractDaoSpring<UserEnti
         super(dataSource(CFG.userdataJdbcUrl()), UserdataUserEntityRowMapper.INSTANCE);
     }
 
+    @NotNull
     @Override
     public UserEntity createUser(UserEntity user) {
         return userDataDao.createUser(user);
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         Optional<UserEntity> userOpt = userDataDao.findById(id);
@@ -76,6 +81,7 @@ public class UserdataUserRepositorySpringJdbc extends AbstractDaoSpring<UserEnti
         return Optional.of(userEntity);
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         Optional<UserEntity> userOpt = userDataDao.findByUsername(username);
@@ -119,6 +125,7 @@ public class UserdataUserRepositorySpringJdbc extends AbstractDaoSpring<UserEnti
         return Optional.of(userEntity);
     }
 
+    @NotNull
     @Override
     public UserEntity update(UserEntity user) {
         jdbcTemplate.update(con -> {

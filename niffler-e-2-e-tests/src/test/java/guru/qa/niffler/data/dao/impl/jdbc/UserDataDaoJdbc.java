@@ -4,7 +4,9 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UserDataDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,12 +18,15 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class UserDataDaoJdbc implements UserDataDao {
 
     private static final Config CFG = Config.getInstance();
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
-    public UserEntity createUser(UserEntity user) {
+    public UserEntity createUser(@NotNull UserEntity user) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -48,6 +53,8 @@ public class UserDataDaoJdbc implements UserDataDao {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -63,6 +70,8 @@ public class UserDataDaoJdbc implements UserDataDao {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -78,6 +87,8 @@ public class UserDataDaoJdbc implements UserDataDao {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public List<UserEntity> findAll() {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -95,6 +106,7 @@ public class UserDataDaoJdbc implements UserDataDao {
         }
     }
 
+    @SuppressWarnings("resource")
     @Override
     public boolean deleteUser(UserEntity user) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(

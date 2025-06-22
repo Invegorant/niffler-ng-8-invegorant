@@ -9,9 +9,11 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 
+@ParametersAreNonnullByDefault
 public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
@@ -47,7 +49,8 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
         return createdUser();
     }
 
-    public static @Nullable UserJson createdUser() {
+    @Nullable
+    public static UserJson createdUser() {
         final ExtensionContext context = TestsMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }

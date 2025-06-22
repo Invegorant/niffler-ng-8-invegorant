@@ -5,11 +5,15 @@ import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage {
+@ParametersAreNonnullByDefault
+public class LoginPage extends BasePage<LoginPage> {
 
     public static final String URL = Config.getInstance().authUrl() + "login";
 
@@ -38,7 +42,7 @@ public class LoginPage {
         this.showPasswordBtn = $("button[class^='form__password']");
     }
 
-
+    @Nonnull
     public MainPage doLogin(String username, String password) {
         usernameInput.setValue(username);
         passwordInput.setValue(password);
@@ -46,21 +50,25 @@ public class LoginPage {
         return new MainPage();
     }
 
+    @Nonnull
     public LoginPage setUsername(String username) {
         usernameInput.setValue(username);
         return this;
     }
 
+    @Nonnull
     public LoginPage setPassword(String password) {
         passwordInput.setValue(password);
         return this;
     }
 
+    @Nonnull
     public LoginPage submit() {
         submitBtn.click();
         return this;
     }
 
+    @Nonnull
     public RegisterPage openRegisterPage() {
         registryBtn.click();
         return new RegisterPage();
@@ -70,18 +78,21 @@ public class LoginPage {
         loginHeader.shouldHave(text("Log in"));
     }
 
+    @Nonnull
     public LoginPage showPassword() {
         showPasswordBtn.click();
         showPasswordBtn.shouldBe(Condition.attributeMatching("class", ".*active"));
         return this;
     }
 
+    @Nonnull
     public LoginPage checkUserNameInput(String usernameValue) {
         usernameInput.shouldHave(value(usernameValue)
                 .because("Заполненное поле Username должно иметь значение " + usernameValue));
         return this;
     }
 
+    @Nonnull
     public LoginPage checkPasswordInput(String passwordValue) {
         passwordInput.shouldHave(value(passwordValue)
                 .because("Заполненное поле Password должно иметь значение " + passwordValue));

@@ -6,18 +6,22 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryHibernate implements SpendRepository {
 
     private static final Config CFG = Config.getInstance();
 
     private final EntityManager em = em(CFG.spendJdbcUrl());
 
+    @NotNull
     @Override
     public SpendEntity createSpend(SpendEntity spend) {
         em.joinTransaction();
@@ -25,6 +29,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @NotNull
     @Override
     public SpendEntity updateSpend(SpendEntity spend) {
         em.joinTransaction();
@@ -32,6 +37,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @NotNull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         em.joinTransaction();
@@ -39,6 +45,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return category;
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return Optional.ofNullable(
@@ -46,6 +53,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         );
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
         try {
@@ -60,6 +68,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         }
     }
 
+    @NotNull
     @Override
     public Optional<SpendEntity> findSpendById(UUID id) {
         return Optional.ofNullable(
@@ -67,6 +76,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         );
     }
 
+    @NotNull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         try {

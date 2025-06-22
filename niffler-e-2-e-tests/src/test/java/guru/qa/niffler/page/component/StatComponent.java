@@ -1,4 +1,4 @@
-package guru.qa.niffler.page.components;
+package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
@@ -12,6 +12,7 @@ import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import static guru.qa.niffler.condition.StatConditions.*;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@ParametersAreNonnullByDefault
 public class StatComponent {
 
     public final SelenideElement self = $("#stat");
@@ -31,11 +33,13 @@ public class StatComponent {
     private final ElementsCollection statisticCells = $$("#legend-container li");
     private final ElementsCollection tableRows = $$("#spendings tbody tr");
 
+    @Nonnull
     public StatComponent checkStatisticBubblesContains(String... texts) {
         bubbles.should(CollectionCondition.texts(texts));
         return this;
     }
 
+    @Nonnull
     public StatComponent checkStatisticImage(BufferedImage expectedImage) throws IOException {
         Selenide.sleep(3000);
         assertFalse(
@@ -48,6 +52,7 @@ public class StatComponent {
         return this;
     }
 
+    @Nonnull
     public BufferedImage chartScreenshot() throws IOException {
         return ImageIO.read(requireNonNull(chart.screenshot()));
     }
@@ -60,24 +65,28 @@ public class StatComponent {
     }
 
     @Step("Check stat bubbles")
+    @Nonnull
     public StatComponent checkStatBubbles(Bubble... expectedBubbles) {
         statisticCells.shouldHave(bubble(expectedBubbles));
         return this;
     }
 
     @Step("Check stat bubbles in any order")
+    @Nonnull
     public StatComponent checkStatBubblesInAnyOrder(Bubble... expectedBubbles) {
         statisticCells.shouldHave(bubblesInAnyOrder(expectedBubbles));
         return this;
     }
 
     @Step("Check stat bubbles contains")
+    @Nonnull
     public StatComponent checkStatBubblesContains(Bubble... expectedBubbles) {
         statisticCells.shouldHave(bubblesContains(expectedBubbles));
         return this;
     }
 
     @Step("Check spending table")
+    @Nonnull
     public StatComponent checkSpendTable(SpendJson... expectedSpends) {
         tableRows.shouldHave(spend(expectedSpends));
         return this;

@@ -4,9 +4,11 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.extractor.AuthUserEntityExtractor;
 import guru.qa.niffler.data.repository.AuthUserRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,14 +16,16 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositorySpringJdbc extends AbstractRepSpring<AuthUserEntity> implements AuthUserRepository {
 
     public AuthUserRepositorySpringJdbc() {
         super(dataSource(Config.getInstance().authJdbcUrl()), AuthUserEntityExtractor.INSTANCE);
     }
 
+    @NotNull
     @Override
-    public AuthUserEntity create(AuthUserEntity user) {
+    public AuthUserEntity create(@NotNull AuthUserEntity user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
@@ -51,6 +55,7 @@ public class AuthUserRepositorySpringJdbc extends AbstractRepSpring<AuthUserEnti
         return user;
     }
 
+    @NotNull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
         jdbcTemplate.update(con -> {
@@ -76,6 +81,7 @@ public class AuthUserRepositorySpringJdbc extends AbstractRepSpring<AuthUserEnti
         return user;
     }
 
+    @NotNull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         return Optional.ofNullable(
@@ -96,6 +102,7 @@ public class AuthUserRepositorySpringJdbc extends AbstractRepSpring<AuthUserEnti
         );
     }
 
+    @NotNull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         return Optional.ofNullable(

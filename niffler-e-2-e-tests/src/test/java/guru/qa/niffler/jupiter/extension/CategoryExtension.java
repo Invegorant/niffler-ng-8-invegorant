@@ -11,9 +11,13 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+@ParametersAreNonnullByDefault
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
@@ -73,12 +77,15 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver 
         return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson[].class);
     }
 
+    public static List<CategoryJson> createdCategories() {
+        final ExtensionContext context = TestsMethodContextExtension.context();
+        return Optional.ofNullable(context.getStore(NAMESPACE).get(context.getUniqueId(), List.class))
+                .orElse(Collections.emptyList());
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public CategoryJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return (CategoryJson[]) extensionContext.getStore(NAMESPACE)
-                .get(extensionContext.getUniqueId(), List.class)
-                .stream()
-                .toArray(CategoryJson[]::new);
+        return createdCategories().toArray(CategoryJson[]::new);
     }
 }

@@ -5,8 +5,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.components.Header;
-import guru.qa.niffler.page.components.MenuComponent;
+import guru.qa.niffler.page.component.MenuComponent;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
@@ -25,7 +24,7 @@ public abstract class AbstractTest {
     }
 
     public LoginPage signOut() {
-        new Header().openMenu().selectMenuItem(MenuComponent.MenuItem.SIGN_OUT);
+        new MainPage().openMenu().selectMenuItem(MenuComponent.MenuItem.SIGN_OUT);
         return new LoginPage();
     }
 

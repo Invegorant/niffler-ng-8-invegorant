@@ -2,26 +2,31 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.SneakyThrows;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class MenuComponent {
+@ParametersAreNonnullByDefault
+public class Menu {
 
     private final ElementsCollection menuItems = $$("ul[role='menu'] li");
     private final SelenideElement menuBtn = $("button[aria-label='Menu']");
 
-    @SneakyThrows
+    @Step("Select '{item.name}' from menu")
     public void selectMenuItem(MenuItem item) {
         menuItems.find(exactText(item.getMenuValue())).click();
     }
 
-    @SneakyThrows
-    public MenuComponent openMenu() {
+    @Step("Open Menu")
+    @Nonnull
+    public Menu openMenu() {
         menuBtn.click();
         return this;
     }

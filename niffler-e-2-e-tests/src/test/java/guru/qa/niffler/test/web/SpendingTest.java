@@ -34,12 +34,12 @@ public class SpendingTest extends AbstractTest {
         final String newDescription = "Обучение Niffler NG";
 
         login(user)
-                .editSpending(user.testData().spendings().getFirst().description())
+                .getSpendsTable()
+                .editSpend(user.testData().spendings().getFirst().description())
                 .editDescription(newDescription);
 
-        new MainPage()
-                .searchSpending(newDescription)
-                .checkThatTableContainsSpending(newDescription);
+        new MainPage().getSpendsTable()
+                .checkThatTableContains(user.testData().spendings().getFirst());
     }
 
     @User(
@@ -61,11 +61,10 @@ public class SpendingTest extends AbstractTest {
     )
     @ScreenShotTest("img/expected-stats.png")
     void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
-        openLoginPage()
-                .doLogin(user.username(), (user.testData().password()));
+        login(user);
 
-        new MainPage().assertPicture(expected);
         new StatComponent()
+                .checkStatisticImage(expected)
                 .checkStatBubblesInAnyOrder(
                         new Bubble(Color.green, "Обучение 50000 ₽"),
                         new Bubble(Color.yellow, "Путешествие 80000 ₽"));
@@ -138,13 +137,13 @@ public class SpendingTest extends AbstractTest {
     void spending_shouldUpdateStatAfterSpendingIsRemoved(UserJson user, BufferedImage expected) throws IOException {
         MainPage mainPage = login(user);
 
-        mainPage
-                .deleteSpending("Обучение Advanced 2.0")
-                .checkTableSize(0);
+        mainPage.getSpendsTable()
+                .deleteSpend("Обучение Advanced 2.0");
 
         Selenide.refresh();
 
-        mainPage.assertPicture(expected);
+        mainPage.getStatComponent()
+                .checkStatisticImage(expected);
     }
 
     @User(
@@ -156,18 +155,19 @@ public class SpendingTest extends AbstractTest {
     )
     @ScreenShotTest("img/expected-updated-stat.png")
     void spending_shouldUpdateStatAfterSpendingIsUpdated(UserJson user, BufferedImage expected) throws IOException {
-        final int newAmount = 50000;
+        final String newAmount = "50000";
         MainPage mainPage = login(user);
 
-        mainPage
-                .editSpending("Обучение Advanced 2.0")
-                .setNewSpendingAmount(newAmount)
-                .saveSpending();
+        mainPage.getSpendsTable()
+                .editSpend("Обучение Advanced 2.0")
+                .editAmount(newAmount);
 
         mainPage
                 .waitForPieChartToLoad()
-                .checkBubblesHasText("Обучение " + newAmount)
-                .assertPicture(expected);
+                .getStatComponent()
+                .checkBubblesHasText("Обучение " + newAmount);
+        mainPage.getStatComponent()
+                .checkStatisticImage(expected);
     }
 
     @User(
@@ -180,14 +180,18 @@ public class SpendingTest extends AbstractTest {
     )
     @ScreenShotTest("img/expected-stats.png")
     void spending_shouldUpdateStatAfterCategoryIsArchived(UserJson user, BufferedImage expected) throws IOException {
-        login(user)
-                .openProfilePage()
+        MainPage mainPage = login(user);
+
+        mainPage.getHeader().toProfilePage()
                 .updateCategory("Обучение");
 
-        openMainPage()
+        mainPage
                 .waitForPieChartToLoad()
-                .checkBubblesHasText("Archived " + "50000")
-                .assertPicture(expected);
+                .getStatComponent()
+                .checkBubblesHasText("Archived " + "50000");
+
+        mainPage.getStatComponent()
+                .checkStatisticImage(expected);
     }
 
     @User(
@@ -203,8 +207,23 @@ public class SpendingTest extends AbstractTest {
             rewriteExpected = true
     )
     void spending_overwriteScreenshotTest(UserJson user, BufferedImage expected) throws IOException {
-        login(user)
-                .waitForPieChartToLoad()
-                .assertPicture(expected);
+        MainPage mainPage = login(user)
+                .waitForPieChartToLoad();
+        mainPage.getStatComponent()
+                .checkStatisticImage(expected);
+    }
+
+    @User
+    @Test
+    void spending_shouldSuccessfullyAddNewSpending(UserJson user) {
+        SpendJson spend = user.testData().spendings().getFirst();
+        MainPage mainPage = login(user);
+        mainPage
+                .getHeader()
+                .navigateToAddSpendingPage()
+                .fillAllFields(spend)
+                .clickConfirmButton()
+                .getSpendsTable()
+                .checkThatTableContains(spend);
     }
 }

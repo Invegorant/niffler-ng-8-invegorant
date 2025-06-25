@@ -25,6 +25,7 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.*;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
+import io.qameta.allure.Step;
 import jakarta.persistence.EntityNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.transaction.ChainedTransactionManager;
@@ -90,6 +91,7 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя Spring JDBC + xaTransactionTemplate
      */
+    @Step("Create User with Spring Tx")
     @Nonnull
     public UserJson createUserSpringTx(UserJson user) {
         return requireNonNull(xaTransactionTemplate.execute(() -> createUserSpringJdbc(user)));
@@ -98,6 +100,7 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя Spring JDBC без xaTransactionTemplate
      */
+    @Step("Create User without Spring Tx")
     @Nonnull
     public UserJson createUserSpringNoTx(UserJson user) {
         return createUserSpringJdbc(user);
@@ -106,6 +109,7 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя JDBC + xaTransactionTemplate
      */
+    @Step("Create User with JDBC Tx")
     @Nonnull
     public UserJson createUserJdbcTx(UserJson user) {
         return requireNonNull(xaTransactionTemplate.execute(() -> createUserJdbc(user)));
@@ -114,6 +118,7 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя JDBC без xaTransactionTemplate
      */
+    @Step("Create User without JDBC Tx")
     @Nonnull
     public UserJson createUserJdbcNoTx(UserJson user) {
         return createUserJdbc(user);
@@ -123,6 +128,7 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя Spring JDBC + ChainedTransactionManager
      */
+    @Step("Create User with JDBC Chained Tx")
     @Nonnull
     public UserJson createUserSpringJdbcChainedTx(UserJson user) {
         return requireNonNull(chainedTxTemplate.execute(status -> createUserSpringJdbc(user)));
@@ -182,6 +188,7 @@ public class UsersDbClient implements UsersClient {
         );
     }
 
+    @Step("Create User")
     @NotNull
     @Override
     public UserJson createUser(String username, String password) {
@@ -196,6 +203,7 @@ public class UsersDbClient implements UsersClient {
         ));
     }
 
+    @Step("Add income invitations to user: {targetUser}")
     @Override
     public void createIncomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
@@ -221,6 +229,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @Step("Add outcome invitations to user: {targetUser}")
     @Override
     public void createOutcomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
@@ -246,6 +255,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @Step("Add friends to user: {targetUser}")
     @Override
     public void createFriends(UserJson targetUser, int count) {
         if (count > 0) {
@@ -271,6 +281,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @Step("Delete user: {user}")
     @Override
     public void remove(UserJson user) {
         xaTransactionTemplate.execute(() -> {

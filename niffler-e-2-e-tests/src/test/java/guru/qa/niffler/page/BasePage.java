@@ -5,7 +5,7 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.page.component.MenuComponent;
+import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,8 +20,9 @@ public abstract class BasePage<T extends BasePage<?>> {
 
     private final SelenideElement alert = $(".MuiSnackbar-root");
     private final ElementsCollection formErrors = $$("p.Mui-error, .input__helper-text");
-    private final MenuComponent menu = new MenuComponent();
 
+
+    @Step("Verify alert has message: {expectedText}")
     @SuppressWarnings("unchecked")
     @Nonnull
     public T checkAlertMessage(String expectedText) {
@@ -29,14 +30,11 @@ public abstract class BasePage<T extends BasePage<?>> {
         return (T) this;
     }
 
+    @Step("Verify form error message is: {expectedText}")
     @SuppressWarnings("unchecked")
     @Nonnull
     public T checkFormErrorMessage(String... expectedText) {
         formErrors.should(CollectionCondition.textsInAnyOrder(expectedText));
         return (T) this;
-    }
-
-    public MenuComponent openMenu() {
-        return menu.openMenu();
     }
 }

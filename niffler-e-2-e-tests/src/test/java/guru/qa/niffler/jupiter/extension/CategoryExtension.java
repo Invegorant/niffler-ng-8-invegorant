@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +78,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver 
         return parameterContext.getParameter().getType().isAssignableFrom(CategoryJson[].class);
     }
 
-    public static List<CategoryJson> createdCategories() {
+    public static @Nonnull List<CategoryJson> createdCategories() {
         final ExtensionContext context = TestsMethodContextExtension.context();
         return Optional.ofNullable(context.getStore(NAMESPACE).get(context.getUniqueId(), List.class))
                 .orElse(Collections.emptyList());

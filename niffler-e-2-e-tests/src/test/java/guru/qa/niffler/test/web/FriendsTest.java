@@ -3,6 +3,7 @@ package guru.qa.niffler.test.web;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.page.MainPage;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,8 @@ public class FriendsTest extends AbstractTest {
     void friends_friendShouldBePresentInFriendsTable(UserJson user) {
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openFriendsPage()
+                .getHeader()
+                .toFriendsPage()
                 .checkFriendIsPresentInTable(user.testData().friends().getFirst().username());
     }
 
@@ -27,7 +29,8 @@ public class FriendsTest extends AbstractTest {
     void friends_friendTableShouldBeEmptyForNewUser(UserJson user) {
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openFriendsPage()
+                .getHeader()
+                .toFriendsPage()
                 .checkFriendsTableIsEmpty();
     }
 
@@ -37,7 +40,8 @@ public class FriendsTest extends AbstractTest {
     void friends_incomeInvitationBePresentInFriendsTable(UserJson user) {
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openFriendsPage()
+                .getHeader()
+                .toFriendsPage()
                 .checkFriendRequestFromUser(user.testData().incomeInvitations().getFirst().username());
     }
 
@@ -47,8 +51,39 @@ public class FriendsTest extends AbstractTest {
     void friends_outcomeInvitationBePresentInAllPeoplesTableTable(UserJson user) {
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openAllPeoplePage()
+                .getHeader()
+                .toAllPeoplesPage()
                 .searchRequestByUsername(user.username())
                 .checkOutcomeRequestToUser(user.testData().outcomeInvitations().getFirst().username());
+    }
+
+    @User(
+            incomeInvitations = 1
+    )
+    @Test
+    @DisplayName("Друзья - Проверка возможности принятия в друзья")
+    void friends_userCanAcceptIncomeFriendInvitation(UserJson user) {
+        MainPage mainPage = login(user);
+        String incomeUsername = user.testData().incomeInvitations().getFirst().username();
+        mainPage
+                .getHeader()
+                .toFriendsPage()
+                .acceptIncomingRequestFrom(incomeUsername)
+                .checkFriendIsPresentInTable(incomeUsername);
+    }
+
+    @User(
+            incomeInvitations = 1
+    )
+    @Test
+    @DisplayName("Друзья - Проверка возможности отказа принятия в друзья")
+    void friends_userCanDeclineIncomeFriendInvitation(UserJson user) {
+        MainPage mainPage = login(user);
+        String incomeUsername = user.testData().incomeInvitations().getFirst().username();
+        mainPage
+                .getHeader()
+                .toFriendsPage()
+                .declineIncomingRequestFrom(incomeUsername)
+                .checkFriendsTableIsEmpty();
     }
 }

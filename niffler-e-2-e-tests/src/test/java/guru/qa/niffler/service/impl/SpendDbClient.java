@@ -9,6 +9,7 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
+import io.qameta.allure.Step;
 import org.openqa.selenium.NotFoundException;
 
 import javax.annotation.Nonnull;
@@ -28,6 +29,7 @@ public class SpendDbClient implements SpendClient {
             CFG.spendJdbcUrl()
     );
 
+    @Step("Create spend: {spend}")
     @Nonnull
     @Override
     public SpendJson createSpend(SpendJson spend) {
@@ -47,6 +49,7 @@ public class SpendDbClient implements SpendClient {
         ));
     }
 
+    @Step("Update spend: {spend}")
     @Nonnull
     @Override
     public SpendJson updateSpend(SpendJson spend) {
@@ -56,6 +59,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Step("Create category: {category}")
     @Nonnull
     @Override
     public CategoryJson createCategory(CategoryJson category) {
@@ -65,6 +69,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Step("Find category by id: {id}")
     @Nonnull
     @Override
     public CategoryJson findCategoryById(UUID id) {
@@ -80,6 +85,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Step("Find category by username '{username}' and categoryName '{name}'")
     @Nonnull
     @Override
     public CategoryJson findCategoryByUsernameAndCategoryName(String username, String name) {
@@ -95,6 +101,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Step("Find spend by id: {id}")
     @Nonnull
     @Override
     public SpendJson findSpendById(UUID id) {
@@ -110,6 +117,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Step("Find spend by username '{username}' and description '{description}'")
     @Nonnull
     @Override
     public SpendJson findSpendByUsernameAndSpendDescription(String username, String description) {
@@ -125,6 +133,7 @@ public class SpendDbClient implements SpendClient {
         }));
     }
 
+    @Step("Remove spend: {spend}")
     @Override
     public void removeSpend(SpendJson spend) {
         xaTransactionTemplate.execute(() -> {
@@ -137,6 +146,7 @@ public class SpendDbClient implements SpendClient {
         );
     }
 
+    @Step("Remove category: {category}")
     @Override
     public void removeCategory(CategoryJson category) {
         xaTransactionTemplate.execute(() -> {

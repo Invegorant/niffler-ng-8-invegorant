@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.condition.SpendConditions.spend;
@@ -27,21 +29,32 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @ParametersAreNonnullByDefault
 public class StatComponent {
 
-    public final SelenideElement self = $("#stat");
+    private final SelenideElement self = $("#stat");
     private final ElementsCollection bubbles = self.$("#legend-container").$$("li");
     private final SelenideElement chart = $("canvas[role='img']");
     private final ElementsCollection statisticCells = $$("#legend-container li");
     private final ElementsCollection tableRows = $$("#spendings tbody tr");
 
+
+    @Step("Verify bubbles has text: {description}")
+    @Nonnull
+    public StatComponent checkBubblesHasText(String description) {
+        bubbles.find(text(description))
+                .should(visible);
+        return this;
+    }
+
+    @Step("Verify bubbles contains texts")
     @Nonnull
     public StatComponent checkStatisticBubblesContains(String... texts) {
         bubbles.should(CollectionCondition.texts(texts));
         return this;
     }
 
+    @Step("Verify statistic image")
     @Nonnull
     public StatComponent checkStatisticImage(BufferedImage expectedImage) throws IOException {
-        Selenide.sleep(3000);
+        Selenide.sleep(5000L);
         assertFalse(
                 new ScreenDiffResult(
                         chartScreenshot(),
@@ -52,6 +65,7 @@ public class StatComponent {
         return this;
     }
 
+    @Step("Get image from chart")
     @Nonnull
     public BufferedImage chartScreenshot() throws IOException {
         return ImageIO.read(requireNonNull(chart.screenshot()));

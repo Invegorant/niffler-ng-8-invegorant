@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public record UserJson(
         @JsonIgnore
         TestData testData) {
 
-    public static UserJson fromEntity(UserEntity entity, FriendshipStatus friendshipStatus) {
+    public static @Nonnull UserJson fromEntity(UserEntity entity, FriendshipStatus friendshipStatus) {
         return new UserJson(
                 entity.getId(),
                 entity.getUsername(),
@@ -46,7 +47,7 @@ public record UserJson(
         );
     }
 
-    public UserJson withPassword(String password) {
+    public @Nonnull UserJson withPassword(String password) {
         return withTestData(
                 new TestData(
                         password,
@@ -59,7 +60,7 @@ public record UserJson(
         );
     }
 
-    public UserJson withTestData(TestData testData) {
+    public @Nonnull UserJson withTestData(TestData testData) {
         return new UserJson(
                 id,
                 username,

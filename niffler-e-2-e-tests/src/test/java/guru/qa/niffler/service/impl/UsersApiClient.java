@@ -6,6 +6,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.service.api.BaseApiClient;
+import io.qameta.allure.Step;
 import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -40,6 +41,7 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
     private final AuthApi authApi = retrofit.create(AuthApi.class);
     private final UserdataApi userdataApi = retrofit.create(UserdataApi.class);
 
+    @Step("Create User")
     @NotNull
     @Override
     public UserJson createUser(String username, String password) {
@@ -52,6 +54,7 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
         );
     }
 
+    @Step("Add income invitations to user: {targetUser}")
     @Override
     public void createIncomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
@@ -64,6 +67,7 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
         }
     }
 
+    @Step("Add outcome invitations to user: {targetUser}")
     @Override
     public void createOutcomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
@@ -76,6 +80,7 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
         }
     }
 
+    @Step("Add friends to user: {targetUser}")
     @Override
     public void createFriends(UserJson targetUser, int count) {
         if (count > 0) {
@@ -89,6 +94,7 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
         }
     }
 
+    @Step("Delete user: {user}")
     @Override
     public void remove(UserJson user) {
         throw new UnsupportedOperationException("NYI method remove");

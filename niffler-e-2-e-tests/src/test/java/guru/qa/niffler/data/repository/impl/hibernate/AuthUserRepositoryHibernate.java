@@ -3,6 +3,7 @@ package guru.qa.niffler.data.repository.impl.hibernate;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
+import io.qameta.allure.Step;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
 
     private final EntityManager em = em(CFG.authJdbcUrl());
 
+    @Step("Create user")
     @NotNull
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
@@ -28,6 +30,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         return user;
     }
 
+    @Step("Update user")
     @NotNull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
@@ -36,6 +39,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         return user;
     }
 
+    @Step("Find user by id: {id}")
     @NotNull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
@@ -44,6 +48,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         );
     }
 
+    @Step("Find user by username: {username}")
     @NotNull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
@@ -59,6 +64,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         }
     }
 
+    @Step("Delete user")
     @Override
     public void remove(AuthUserEntity user) {
         em.joinTransaction();

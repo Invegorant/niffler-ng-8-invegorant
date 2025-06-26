@@ -4,20 +4,26 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import io.qameta.allure.Step;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryHibernate implements SpendRepository {
 
     private static final Config CFG = Config.getInstance();
 
     private final EntityManager em = em(CFG.spendJdbcUrl());
 
+    @Step("Create spend: {spend}")
+    @NotNull
     @Override
     public SpendEntity createSpend(SpendEntity spend) {
         em.joinTransaction();
@@ -25,6 +31,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @Step("Update spend: {spend}")
+    @NotNull
     @Override
     public SpendEntity updateSpend(SpendEntity spend) {
         em.joinTransaction();
@@ -32,6 +40,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return spend;
     }
 
+    @Step("Create category: {category}")
+    @NotNull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         em.joinTransaction();
@@ -39,6 +49,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
         return category;
     }
 
+    @Step("Find category by id: {id}")
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return Optional.ofNullable(
@@ -46,6 +58,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
         );
     }
 
+    @Step("Find category by username '{username}' and category name '{name}'")
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
         try {
@@ -60,6 +74,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
         }
     }
 
+    @Step("Find spend by id: {id}")
+    @NotNull
     @Override
     public Optional<SpendEntity> findSpendById(UUID id) {
         return Optional.ofNullable(
@@ -67,6 +83,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
         );
     }
 
+    @Step("Find spend by username '{username}' and spend description '{description}'")
+    @NotNull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         try {
@@ -81,6 +99,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         }
     }
 
+    @Step("Delete spend: {spend}")
     @Override
     public void removeSpend(SpendEntity spend) {
         em.joinTransaction();
@@ -88,6 +107,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         em.remove(se);
     }
 
+    @Step("Delete category: {category}")
     @Override
     public void removeCategory(CategoryEntity category) {
         em.joinTransaction();

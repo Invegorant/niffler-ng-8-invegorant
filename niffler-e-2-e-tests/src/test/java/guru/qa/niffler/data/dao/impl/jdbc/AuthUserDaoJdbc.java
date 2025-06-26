@@ -3,9 +3,11 @@ package guru.qa.niffler.data.dao.impl.jdbc;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,11 +19,14 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoJdbc implements AuthUserDao {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public AuthUserEntity create(AuthUserEntity authUser) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -53,6 +58,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -68,6 +75,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -83,6 +92,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public List<AuthUserEntity> findAll() {
         List<AuthUserEntity> auList = new ArrayList<>();
@@ -101,6 +112,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @SuppressWarnings("resource")
     @Override
     public boolean delete(AuthUserEntity authUser) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(

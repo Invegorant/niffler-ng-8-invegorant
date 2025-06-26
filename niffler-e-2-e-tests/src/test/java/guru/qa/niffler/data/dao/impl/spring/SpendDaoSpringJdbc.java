@@ -3,23 +3,27 @@ package guru.qa.niffler.data.dao.impl.spring;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.row_mapper.SpendEntityRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendDaoSpringJdbc extends AbstractDaoSpring<SpendEntity> implements SpendDao {
 
     public SpendDaoSpringJdbc(String jdbcUrl) {
         super(jdbcUrl, SpendEntityRowMapper.INSTANCE);
     }
 
+    @NotNull
     @Override
-    public SpendEntity createSpend(SpendEntity spend) {
+    public SpendEntity createSpend(@NotNull SpendEntity spend) {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -43,6 +47,7 @@ public class SpendDaoSpringJdbc extends AbstractDaoSpring<SpendEntity> implement
         return spend;
     }
 
+    @NotNull
     @Override
     public Optional<SpendEntity> findSpendById(UUID id) {
         return Optional.ofNullable(
@@ -54,6 +59,7 @@ public class SpendDaoSpringJdbc extends AbstractDaoSpring<SpendEntity> implement
         );
     }
 
+    @NotNull
     @Override
     public List<SpendEntity> findAllByUsername(String username) {
         return jdbcTemplate.query(
@@ -63,6 +69,7 @@ public class SpendDaoSpringJdbc extends AbstractDaoSpring<SpendEntity> implement
         );
     }
 
+    @NotNull
     @Override
     public List<SpendEntity> findAll() {
         return jdbcTemplate.query(

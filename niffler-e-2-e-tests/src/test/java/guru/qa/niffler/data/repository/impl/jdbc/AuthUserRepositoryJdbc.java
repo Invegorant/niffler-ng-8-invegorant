@@ -6,7 +6,9 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.row_mapper.AuthUserEntityRowMapper;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.model.Authority;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,13 +19,16 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
     private static final Config CFG = Config.getInstance();
     private static final String URL = CFG.authJdbcUrl();
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
-    public AuthUserEntity create(AuthUserEntity user) {
+    public AuthUserEntity create(@NotNull AuthUserEntity user) {
         try (PreparedStatement userPs = holder(URL).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
@@ -61,8 +66,10 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
-    public AuthUserEntity update(AuthUserEntity user) {
+    public AuthUserEntity update(@NotNull AuthUserEntity user) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
                 "UPDATE \"user\" SET " +
                         "username = ?," +
@@ -87,6 +94,8 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         return user;
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
@@ -101,6 +110,8 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
@@ -115,8 +126,9 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         }
     }
 
+    @SuppressWarnings("resource")
     @Override
-    public void remove(AuthUserEntity user) {
+    public void remove(@NotNull AuthUserEntity user) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
                 "DELETE FROM \"user\" WHERE id = ?")) {
             ps.setObject(1, user.getId());

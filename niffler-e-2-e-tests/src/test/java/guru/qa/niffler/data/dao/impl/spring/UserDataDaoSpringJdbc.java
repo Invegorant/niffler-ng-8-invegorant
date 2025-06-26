@@ -3,9 +3,11 @@ package guru.qa.niffler.data.dao.impl.spring;
 import guru.qa.niffler.data.dao.UserDataDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.row_mapper.UserdataUserEntityRowMapper;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -14,14 +16,16 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> implements UserDataDao {
 
     public UserDataDaoSpringJdbc(DataSource dataSource) {
         super(dataSource, UserdataUserEntityRowMapper.INSTANCE);
     }
 
+    @NotNull
     @Override
-    public UserEntity createUser(UserEntity user) {
+    public UserEntity createUser(@NotNull UserEntity user) {
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -44,6 +48,7 @@ public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> impleme
         return user;
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         return Optional.ofNullable(
@@ -55,6 +60,7 @@ public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> impleme
         );
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         UserEntity entity = jdbcTemplate.queryForObject(
@@ -64,6 +70,7 @@ public class UserDataDaoSpringJdbc extends AbstractDaoSpring<UserEntity> impleme
         return Optional.ofNullable(entity);
     }
 
+    @NotNull
     @Override
     public List<UserEntity> findAll() {
         return jdbcTemplate.query(

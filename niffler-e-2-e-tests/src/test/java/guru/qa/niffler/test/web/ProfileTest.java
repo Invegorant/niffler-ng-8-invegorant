@@ -33,7 +33,8 @@ public class ProfileTest extends AbstractTest {
 
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openProfilePage()
+                .getHeader()
+                .toProfilePage()
                 .showArchivedCategories()
                 .categoryIsPresent(archivedCategory.name());
     }
@@ -44,7 +45,8 @@ public class ProfileTest extends AbstractTest {
     void profile_activeCategoryShouldPresentInCategoriesList(UserJson user) {
         openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openProfilePage()
+                .getHeader()
+                .toProfilePage()
                 .categoryIsPresent(user.testData().categories().getFirst().name());
     }
 
@@ -53,7 +55,8 @@ public class ProfileTest extends AbstractTest {
     void profile_shouldUpdateProfileImageWhenUploadNewImage(UserJson user, BufferedImage expected) throws IOException {
         ProfilePage profilePage = openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openProfilePage()
+                .getHeader()
+                .toProfilePage()
                 .uploadPhoto("img/e-commerce.png")
                 .submitProfile()
                 .assertToastMessage(PROFILE_SUCCESSFULLY_UPDATED_MSG);
@@ -68,7 +71,8 @@ public class ProfileTest extends AbstractTest {
     void profile_shouldUpdateProfileImageWhenUpdateImage(UserJson user, BufferedImage expected) throws IOException {
         ProfilePage profilePage = openLoginPage()
                 .doLogin(user.username(), user.testData().password())
-                .openProfilePage()
+                .getHeader()
+                .toProfilePage()
                 .uploadPhoto("img/jojo.png")
                 .submitProfile()
                 .assertToastMessage(PROFILE_SUCCESSFULLY_UPDATED_MSG);
@@ -83,5 +87,33 @@ public class ProfileTest extends AbstractTest {
         Selenide.refresh();
 
         profilePage.assertProfilePic(expected);
+    }
+
+    @User
+    @Test
+    void profile_verifyUserNameIsDisplayedOnProfilePage(UserJson user) {
+        login(user)
+                .getHeader()
+                .toProfilePage()
+                .verifyUserNameIsDisplayed(user.username());
+    }
+
+    @User
+    @Test
+    void profile_verifyUserNameFieldIsDisabledOnProfilePage(UserJson user) {
+        login(user)
+                .getHeader()
+                .toProfilePage()
+                .verifyUserNameIsDisabled();
+    }
+
+    @User
+    @Test
+    void profile_verifyUserCanEditUserNameOnProfilePage(UserJson user) {
+        login(user)
+                .getHeader()
+                .toProfilePage()
+                .updateName("NewUserName")
+                .verifyNameIsUpdated("NewUserName");
     }
 }

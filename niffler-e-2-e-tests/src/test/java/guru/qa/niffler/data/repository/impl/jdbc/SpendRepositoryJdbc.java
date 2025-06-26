@@ -9,7 +9,9 @@ import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.model.CurrencyValues;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryJdbc implements SpendRepository {
 
     private static final Config CFG = Config.getInstance();
@@ -26,6 +29,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     private final SpendDao spendDao = new SpendDaoJdbc();
     private final CategoryDao categoryDao = new CategoryDaoJdbc();
 
+    @NotNull
     @Override
     public SpendEntity createSpend(SpendEntity spend) {
         CategoryEntity category = spend.getCategory();
@@ -43,6 +47,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return spendDao.createSpend(spend);
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public SpendEntity updateSpend(SpendEntity spend) {
         try (PreparedStatement ps = holder(URL).connection().prepareStatement(
@@ -72,26 +78,32 @@ public class SpendRepositoryJdbc implements SpendRepository {
         }
     }
 
+    @NotNull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return categoryDao.createCategory(category);
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return categoryDao.findCategoryById(id);
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
         return categoryDao.findCategoryByUsernameAndCategoryName(username, name);
     }
 
+    @NotNull
     @Override
     public Optional<SpendEntity> findSpendById(UUID id) {
         return spendDao.findSpendById(id);
     }
 
+    @SuppressWarnings("resource")
+    @NotNull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(

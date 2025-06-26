@@ -25,20 +25,26 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.*;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
+import io.qameta.allure.Step;
 import jakarta.persistence.EntityNotFoundException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
+import static java.util.Objects.requireNonNull;
 
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
@@ -85,13 +91,17 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя Spring JDBC + xaTransactionTemplate
      */
+    @Step("Create User with Spring Tx")
+    @Nonnull
     public UserJson createUserSpringTx(UserJson user) {
-        return xaTransactionTemplate.execute(() -> createUserSpringJdbc(user));
+        return requireNonNull(xaTransactionTemplate.execute(() -> createUserSpringJdbc(user)));
     }
 
     /**
      * Создает УЗ используя Spring JDBC без xaTransactionTemplate
      */
+    @Step("Create User without Spring Tx")
+    @Nonnull
     public UserJson createUserSpringNoTx(UserJson user) {
         return createUserSpringJdbc(user);
     }
@@ -99,13 +109,17 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя JDBC + xaTransactionTemplate
      */
+    @Step("Create User with JDBC Tx")
+    @Nonnull
     public UserJson createUserJdbcTx(UserJson user) {
-        return xaTransactionTemplate.execute(() -> createUserJdbc(user));
+        return requireNonNull(xaTransactionTemplate.execute(() -> createUserJdbc(user)));
     }
 
     /**
      * Создает УЗ используя JDBC без xaTransactionTemplate
      */
+    @Step("Create User without JDBC Tx")
+    @Nonnull
     public UserJson createUserJdbcNoTx(UserJson user) {
         return createUserJdbc(user);
     }
@@ -114,8 +128,10 @@ public class UsersDbClient implements UsersClient {
     /**
      * Создает УЗ используя Spring JDBC + ChainedTransactionManager
      */
+    @Step("Create User with JDBC Chained Tx")
+    @Nonnull
     public UserJson createUserSpringJdbcChainedTx(UserJson user) {
-        return chainedTxTemplate.execute(status -> createUserSpringJdbc(user));
+        return requireNonNull(chainedTxTemplate.execute(status -> createUserSpringJdbc(user)));
     }
 
     private UserJson createUserJdbc(UserJson user) {
@@ -172,9 +188,11 @@ public class UsersDbClient implements UsersClient {
         );
     }
 
+    @Step("Create User")
+    @NotNull
     @Override
     public UserJson createUser(String username, String password) {
-        return xaTransactionTemplate.execute(() -> {
+        return requireNonNull(xaTransactionTemplate.execute(() -> {
                     AuthUserEntity authUser = createAuthUserEntityRepository(username, password);
                     authUserRepositoryHibernate.create(authUser);
                     return UserJson.fromEntity(
@@ -182,9 +200,10 @@ public class UsersDbClient implements UsersClient {
                             null
                     ).withTestData(new TestData(password));
                 }
-        );
+        ));
     }
 
+    @Step("Add income invitations to user: {targetUser}")
     @Override
     public void createIncomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
@@ -194,7 +213,7 @@ public class UsersDbClient implements UsersClient {
                 targetUser.testData()
                         .incomeInvitations()
                         .add(UserJson.fromEntity(
-                                        xaTransactionTemplate.execute(() -> {
+                                requireNonNull(xaTransactionTemplate.execute(() -> {
                                                     String username = RandomDataUtils.randomUsername();
                                                     AuthUserEntity authUser = createAuthUserEntityRepository(username, DEFAULT_PASSWORD);
                                                     authUserRepositoryHibernate.create(authUser);
@@ -202,7 +221,7 @@ public class UsersDbClient implements UsersClient {
                                                     userdataUserRepositoryHibernate.sendInvitation(addressee, targetEntity);
                                                     return addressee;
                                                 }
-                                        ),
+                                )),
                                         FriendshipStatus.INVITE_RECEIVED
                                 )
                         );
@@ -210,6 +229,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @Step("Add outcome invitations to user: {targetUser}")
     @Override
     public void createOutcomeInvitations(UserJson targetUser, int count) {
         if (count > 0) {
@@ -219,7 +239,7 @@ public class UsersDbClient implements UsersClient {
                 targetUser.testData()
                         .outcomeInvitations()
                         .add(UserJson.fromEntity(
-                                        xaTransactionTemplate.execute(() -> {
+                                requireNonNull(xaTransactionTemplate.execute(() -> {
                                                     String username = RandomDataUtils.randomUsername();
                                                     AuthUserEntity authUser = createAuthUserEntityRepository(username, DEFAULT_PASSWORD);
                                                     authUserRepositoryHibernate.create(authUser);
@@ -227,7 +247,7 @@ public class UsersDbClient implements UsersClient {
                                                     userdataUserRepositoryHibernate.sendInvitation(targetEntity, addressee);
                                                     return addressee;
                                                 }
-                                        ),
+                                )),
                                         FriendshipStatus.INVITE_SENT
                                 )
                         );
@@ -235,6 +255,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @Step("Add friends to user: {targetUser}")
     @Override
     public void createFriends(UserJson targetUser, int count) {
         if (count > 0) {
@@ -244,7 +265,7 @@ public class UsersDbClient implements UsersClient {
                 targetUser.testData()
                         .friends()
                         .add(UserJson.fromEntity(
-                                        xaTransactionTemplate.execute(() -> {
+                                requireNonNull(xaTransactionTemplate.execute(() -> {
                                                     String username = RandomDataUtils.randomUsername();
                                                     AuthUserEntity authUser = createAuthUserEntityRepository(username, DEFAULT_PASSWORD);
                                                     authUserRepositoryHibernate.create(authUser);
@@ -252,7 +273,7 @@ public class UsersDbClient implements UsersClient {
                                                     userdataUserRepositoryHibernate.addFriend(targetEntity, addressee);
                                                     return addressee;
                                                 }
-                                        ),
+                                )),
                                         FriendshipStatus.FRIEND
                                 )
                         );
@@ -260,6 +281,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @Step("Delete user: {user}")
     @Override
     public void remove(UserJson user) {
         xaTransactionTemplate.execute(() -> {

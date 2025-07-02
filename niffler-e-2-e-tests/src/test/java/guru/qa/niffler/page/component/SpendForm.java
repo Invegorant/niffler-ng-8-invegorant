@@ -12,7 +12,7 @@ import java.util.Date;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SpendForm {
+public class SpendForm extends BaseComponent<SpendForm> {
 
     private final SelenideElement amountInput = $("#amount");
     private final SelenideElement currencySelect = $("#currency");
@@ -23,6 +23,10 @@ public class SpendForm {
     private final SelenideElement calendarButton = $("img[alt='Calendar']");
 
     private final Calendar calendar = new Calendar();
+
+    public SpendForm(SelenideElement self) {
+        super(self);
+    }
 
     @Step("Set amount {amount}")
     @Nonnull

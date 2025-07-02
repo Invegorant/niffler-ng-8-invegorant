@@ -5,7 +5,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.api.BaseApiClient;
+import guru.qa.niffler.service.api.Execute;
 import io.qameta.allure.Step;
 import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
-public class SpendApiClient extends BaseApiClient implements SpendClient {
+public class SpendApiClient implements SpendClient, Execute {
 
     private static final Config CFG = Config.getInstance();
 

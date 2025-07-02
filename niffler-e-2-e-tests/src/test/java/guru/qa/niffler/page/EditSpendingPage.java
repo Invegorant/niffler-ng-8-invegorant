@@ -13,7 +13,7 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
-    private final SpendForm spendForm = new SpendForm();
+    private final SpendForm spendForm = new SpendForm($("form.MuiGrid-container"));
     private final SelenideElement saveButton = $("#save");
 
     @Step("Edit spending description: {description}")

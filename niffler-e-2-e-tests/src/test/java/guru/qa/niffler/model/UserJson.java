@@ -7,6 +7,7 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -72,5 +73,27 @@ public record UserJson(
                 photoSmall,
                 friendshipStatus,
                 testData);
+    }
+
+    public @Nonnull UserJson withEmptyTestData() {
+        return new UserJson(
+                id,
+                username,
+                firstname,
+                surname,
+                fullname,
+                currency,
+                photo,
+                photoSmall,
+                friendshipStatus,
+                new TestData(
+                        null,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                )
+        );
     }
 }

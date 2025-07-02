@@ -12,7 +12,6 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.component.StatComponent;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
@@ -61,9 +60,8 @@ public class SpendingTest extends AbstractTest {
     )
     @ScreenShotTest("img/expected-stats.png")
     void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
-        login(user);
-
-        new StatComponent()
+        login(user)
+                .getStatComponent()
                 .checkStatisticImage(expected)
                 .checkStatBubblesInAnyOrder(
                         new Bubble(Color.green, "Обучение 50000 ₽"),
@@ -84,8 +82,8 @@ public class SpendingTest extends AbstractTest {
             )})
     @Test
     void checkSpendingTableTest(UserJson user) {
-        login(user);
-        new StatComponent()
+        login(user)
+                .getStatComponent()
                 .checkSpendTable(user.testData().spendings().toArray(SpendJson[]::new));
     }
 
@@ -118,8 +116,8 @@ public class SpendingTest extends AbstractTest {
     )
     @ScreenShotTest(value = "img/expected-stat-archived.png")
     void statComponentShouldDisplayArchivedCategories(UserJson user, BufferedImage expected) throws IOException {
-        login(user);
-        new StatComponent()
+        login(user)
+                .getStatComponent()
                 .checkStatisticBubblesContains("Поездки 9500 ₽", "Archived 3100 ₽")
                 .checkStatisticImage(expected)
                 .checkBubbles(Color.yellow, Color.green);

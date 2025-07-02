@@ -14,10 +14,14 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class Menu {
+public class Menu extends BaseComponent<Menu> {
 
     private final ElementsCollection menuItems = $$("ul[role='menu'] li");
     private final SelenideElement menuBtn = $("button[aria-label='Menu']");
+
+    public Menu(SelenideElement self) {
+        super(self);
+    }
 
     @Step("Select '{item.name}' from menu")
     public void selectMenuItem(MenuItem item) {

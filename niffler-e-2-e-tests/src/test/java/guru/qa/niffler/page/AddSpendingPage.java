@@ -17,7 +17,7 @@ public class AddSpendingPage extends BasePage<AddSpendingPage> {
     private static final String ADD_SPENDING_LABEL = "Add new spending";
     private final SelenideElement addButton = $("#save");
 
-    private SpendForm spendForm = new SpendForm();
+    private SpendForm spendForm = new SpendForm($("form.MuiGrid-container"));
 
     @Step("Verify 'Add spending' page is opened")
     @Nonnull

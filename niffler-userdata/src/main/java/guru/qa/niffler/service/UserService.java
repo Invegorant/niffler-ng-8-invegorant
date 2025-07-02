@@ -91,17 +91,8 @@ public class UserService {
   public @Nonnull
   UserJson getCurrentUser(@Nonnull String username) {
     return userRepository.findByUsername(username).map(UserJson::fromEntity)
-        .orElseGet(() -> new UserJson(
-            null,
-            username,
-            null,
-            null,
-            null,
-            DEFAULT_USER_CURRENCY,
-            null,
-            null,
-            null
-        ));
+            .orElseThrow(() -> new NotFoundException(
+                    "Can`t find user by username: '" + username + "'"));
   }
 
   @Transactional(readOnly = true)

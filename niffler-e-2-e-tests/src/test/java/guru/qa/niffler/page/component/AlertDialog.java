@@ -8,8 +8,15 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class AlertDialog {
-    private final SelenideElement self = $("div[role='dialog']");
+public class AlertDialog extends BaseComponent<AlertDialog> {
+
+    public AlertDialog() {
+        super($("div[role='dialog']"));
+    }
+
+    public AlertDialog(SelenideElement self) {
+        super(self);
+    }
 
     public SelenideElement getDeleteButton() {
         return self.$$("button").findBy(text("Delete"));

@@ -22,9 +22,9 @@ public class MainPage extends BasePage<MainPage> {
     @Getter
     private final Header header = new Header();
     @Getter
-    private final SpendsTable spendsTable = new SpendsTable();
+    private final SpendsTable spendsTable = new SpendsTable($("#spendings"));
     @Getter
-    private final StatComponent statComponent = new StatComponent();
+    private final StatComponent statComponent = new StatComponent($("#stat"));
 
     private final SelenideElement historyOfSpendingsHeader = $(byText("History of Spendings"));
     private final SelenideElement statisticsHeader = $(byText("Statistics"));

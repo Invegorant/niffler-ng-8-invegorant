@@ -8,6 +8,7 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -44,7 +45,29 @@ public record UserJson(
                 entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
                 entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
                 friendshipStatus,
-                null
+                new TestData(
+                        null,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                )
+        );
+    }
+
+    public @Nonnull UserJson withUsers(List<UserJson> friends,
+                                       List<UserJson> outcomeInvitations,
+                                       List<UserJson> incomeInvitations) {
+        return withTestData(
+                new TestData(
+                        testData.password(),
+                        testData.categories(),
+                        testData.spendings(),
+                        friends,
+                        outcomeInvitations,
+                        incomeInvitations
+                )
         );
     }
 

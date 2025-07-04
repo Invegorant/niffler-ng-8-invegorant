@@ -1,20 +1,25 @@
 package guru.qa.niffler.api.core;
 
 import guru.qa.niffler.config.Config;
+import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.lang3.ArrayUtils;
+import retrofit2.Call;
 import retrofit2.Converter;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
 public abstract class RestClient {
@@ -25,7 +30,13 @@ public abstract class RestClient {
     private final Retrofit retrofit;
 
     public RestClient(String baseUrl) {
-        this(baseUrl, false, JacksonConverterFactory.create(), BODY);
+        this(baseUrl,
+                false,
+                JacksonConverterFactory.create(),
+                BODY,
+                new AllureOkHttp3()
+                        .setRequestTemplate("http-request.ftl")
+                        .setResponseTemplate("http-response.ftl"));
     }
 
     public RestClient(String baseUrl, boolean followRedirect) {
@@ -70,5 +81,28 @@ public abstract class RestClient {
 
     public <T> T create(final Class<T> service) {
         return this.retrofit.create(service);
+    }
+
+    public <T> T execute(Call<T> executeMethod, int expectedCode) {
+        final Response<T> response;
+        try {
+            response = executeMethod.execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+
+        assertEquals(expectedCode, response.code());
+        return response.body();
+    }
+
+    public <T> T execute(Call<T> executeMethod) {
+        final Response<T> response;
+        try {
+            response = executeMethod.execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+
+        return response.body();
     }
 }

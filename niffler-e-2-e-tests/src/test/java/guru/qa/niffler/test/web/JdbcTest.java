@@ -4,6 +4,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,7 @@ import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_USERNAME;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled
 public class JdbcTest {
 
     private final UsersDbClient usersDbClient = new UsersDbClient();

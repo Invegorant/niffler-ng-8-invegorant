@@ -9,7 +9,7 @@ import guru.qa.niffler.test.web.AbstractTest;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.common.messages.ApplicationWarnings.SpendPageAlertMessages.*;
+import static guru.qa.niffler.common.messages.ApplicationWarnings.*;
 import static guru.qa.niffler.model.CurrencyValues.RUB;
 
 @WebTest
@@ -25,7 +25,7 @@ public class SpendAlertTest extends AbstractTest {
                 .navigateToAddSpendingPage()
                 .fillAllFields(spend)
                 .clickConfirmButton()
-                .checkAlertMessage(SPEND_CREATED);
+                .checkAlertMessage(SPEND_CREATED.getVal());
     }
 
     @User(
@@ -43,7 +43,7 @@ public class SpendAlertTest extends AbstractTest {
         login(user)
                 .getSpendsTable()
                 .deleteSpend(user.testData().spendings().getFirst().description())
-                .checkAlertMessage(SPEND_DELETED);
+                .checkAlertMessage(SPEND_DELETED.getVal());
     }
 
     @User(
@@ -62,6 +62,6 @@ public class SpendAlertTest extends AbstractTest {
                 .getSpendsTable()
                 .editSpend(user.testData().spendings().getFirst().description())
                 .editAmount("2000")
-                .checkAlertMessage(SPEND_UPDATED);
+                .checkAlertMessage(SPEND_UPDATED.getVal());
     }
 }

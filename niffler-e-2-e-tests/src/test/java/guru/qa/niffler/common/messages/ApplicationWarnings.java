@@ -1,28 +1,33 @@
 package guru.qa.niffler.common.messages;
 
-public class ApplicationWarnings {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    public class SignupWarnings {
-        public static final String USER_EXISTS = "Username `%s` already exists";
-        public static final String INVALID_USERNAME = "Allowed username length should be from 3 to 50 characters";
-        public static final String INVALID_PASSWORD = "Allowed password length should be from 3 to 12 characters";
-        public static final String PASSWORDS_DO_NOT_MATCH = "Passwords should be equal";
-        public static final String VALIDATION_MESSAGE = "Please fill out this field.";
-    }
+@Getter
+@RequiredArgsConstructor
+public enum ApplicationWarnings {
 
-    public class LoginWarnings {
-        public static final String BAD_CREDENTIALS = "Bad credentials";
-    }
+    /**** SignupWarnings ****/
+    USER_EXISTS("Username `%s` already exists"),
+    INVALID_USERNAME("Allowed username length should be from 3 to 50 characters"),
+    INVALID_PASSWORD("Allowed password length should be from 3 to 12 characters"),
+    PASSWORDS_DO_NOT_MATCH("Passwords should be equal"),
+    VALIDATION_MESSAGE("Please fill out this field."),
 
-    public class SpendPageAlertMessages {
-        public static final String SPEND_CREATED = "New spending is successfully created";
-        public static final String SPEND_DELETED = "Spendings succesfully deleted";
-        public static final String SPEND_UPDATED = "Spending is edited successfully";
-    }
+    /**** LoginWarnings ****/
+    BAD_CREDENTIALS("Bad credentials"),
 
-    public class ProfileAlertMessages {
-        public static final String PROFILE_UPDATED = "Profile successfully updated";
-        public static final String CATEGORY_ADDED = "You've added new category: %s";
-        public static final String ERROR_WHILE_ADDING_CATEGORY = "Error while adding category %s";
-    }
+    /**** SpendPageAlertMessages ****/
+    SPEND_CREATED("New spending is successfully created"),
+    SPEND_DELETED("Spendings succesfully deleted"),
+    SPEND_UPDATED("Spending is edited successfully"),
+
+
+    /**** ProfileAlertMessages ****/
+    PROFILE_UPDATED("Profile successfully updated"),
+    CATEGORY_ADDED("You've added new category: %s"),
+    ERROR_WHILE_ADDING_CATEGORY("Error while adding category %s");
+
+    private final String val;
+
 }

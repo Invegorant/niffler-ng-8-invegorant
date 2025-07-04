@@ -1,5 +1,6 @@
 package guru.qa.niffler.test.web.alert;
 
+import guru.qa.niffler.common.messages.ApplicationWarnings;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
@@ -7,7 +8,6 @@ import guru.qa.niffler.test.web.AbstractTest;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.common.messages.ApplicationWarnings.ProfileAlertMessages.*;
 import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 
 @WebTest
@@ -21,7 +21,7 @@ public class ProfilePageAlertTest extends AbstractTest {
                 .getHeader()
                 .toProfilePage()
                 .updateName("NewUserName")
-                .checkAlertMessage(PROFILE_UPDATED);
+                .checkAlertMessage(ApplicationWarnings.PROFILE_UPDATED.getVal());
     }
 
     @User()
@@ -32,7 +32,7 @@ public class ProfilePageAlertTest extends AbstractTest {
                 .getHeader()
                 .toProfilePage()
                 .addCategory(categoryName)
-                .checkAlertMessage(String.format(CATEGORY_ADDED, categoryName));
+                .checkAlertMessage(String.format(ApplicationWarnings.CATEGORY_ADDED.getVal(), categoryName));
     }
 
     @User()
@@ -43,6 +43,6 @@ public class ProfilePageAlertTest extends AbstractTest {
                 .getHeader()
                 .toProfilePage()
                 .addCategory(categoryName)
-                .checkAlertMessage(String.format(ERROR_WHILE_ADDING_CATEGORY, categoryName));
+                .checkAlertMessage(String.format(ApplicationWarnings.ERROR_WHILE_ADDING_CATEGORY.getVal(), categoryName));
     }
 }

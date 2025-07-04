@@ -7,9 +7,9 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class BaseApiClient {
+public interface Execute {
 
-    protected <T> T execute(Call<T> executeMethod, int expectedCode) {
+    default <T> T execute(Call<T> executeMethod, int expectedCode) {
         final Response<T> response;
         try {
             response = executeMethod.execute();
@@ -21,7 +21,7 @@ public abstract class BaseApiClient {
         return response.body();
     }
 
-    protected <T> T execute(Call<T> executeMethod) {
+    default <T> T execute(Call<T> executeMethod) {
         final Response<T> response;
         try {
             response = executeMethod.execute();

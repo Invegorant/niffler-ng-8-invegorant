@@ -1,7 +1,6 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.*;
 import io.qameta.allure.Step;
@@ -13,11 +12,14 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class Header {
+public class Header extends BaseComponent<Header> {
 
     private static final String HEADER_TITLE = "Niffler";
-    private final Menu menu = new Menu();
-    private final SelenideElement self = $("#root header");
+    private final Menu menu = new Menu($("#root header"));
+
+    public Header() {
+        super($("#root header"));
+    }
 
     private final String addSpendingLink = "a[href*='/spending']";
 

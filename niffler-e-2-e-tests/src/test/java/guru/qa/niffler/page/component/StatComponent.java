@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
-public class StatComponent {
+public class StatComponent extends BaseComponent<StatComponent> {
 
     private final SelenideElement self = $("#stat");
     private final ElementsCollection bubbles = self.$("#legend-container").$$("li");
@@ -35,6 +35,9 @@ public class StatComponent {
     private final ElementsCollection statisticCells = $$("#legend-container li");
     private final ElementsCollection tableRows = $$("#spendings tbody tr");
 
+    public StatComponent(SelenideElement self) {
+        super(self);
+    }
 
     @Step("Verify bubbles has text: {description}")
     @Nonnull

@@ -1,6 +1,5 @@
 package guru.qa.niffler.page.component;
 
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -14,8 +13,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class Calendar {
-    private final SelenideElement self;
+public class Calendar extends BaseComponent<Calendar> {
 
     private final String previousMonthButton = "button[title='Previous month']";
     private final String nextMonthButton = "button[title='Next month']";
@@ -25,7 +23,7 @@ public class Calendar {
     private final String selectYearButton = "button[aria-label='calendar view is open, switch to year view']";
 
     public Calendar() {
-        this.self = $("div.MuiDateCalendar-root");
+        super($("div.MuiDateCalendar-root"));
     }
 
     @Step("Set date with calendar")

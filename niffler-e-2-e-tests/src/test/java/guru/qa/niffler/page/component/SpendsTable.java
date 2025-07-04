@@ -20,7 +20,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class SpendsTable {
+public class SpendsTable extends BaseComponent<SpendsTable> {
     private static final Map<String, Integer> COLUMN_INDEX = Map.of(
             "select", 0,
             "category", 1,
@@ -34,6 +34,10 @@ public class SpendsTable {
     private final SelenideElement periodSelect = $("#period");
     private final SelenideElement deleteSpendButton = $("#delete");
     private final SearchField searchField = new SearchField();
+
+    public SpendsTable(SelenideElement self) {
+        super(self);
+    }
 
     @Nonnull
     private ElementsCollection getCellsBySpendDescription(String spendDescription) {

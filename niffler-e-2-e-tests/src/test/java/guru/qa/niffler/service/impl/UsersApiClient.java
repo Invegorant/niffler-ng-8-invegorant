@@ -2,25 +2,29 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.UserdataApi;
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.api.BaseApiClient;
+import guru.qa.niffler.service.api.Execute;
 import io.qameta.allure.Step;
 import io.qameta.allure.okhttp3.AllureOkHttp3;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.apache.commons.lang3.time.StopWatch;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.TimeUnit;
 
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+import static java.lang.Thread.sleep;
 
 @ParametersAreNonnullByDefault
-public class UsersApiClient extends BaseApiClient implements UsersClient {
+public class UsersApiClient implements UsersClient, Execute {
 
     private static final Config CFG = Config.getInstance();
     private static final String defaultPassword = DEFAULT_PASSWORD;
@@ -45,13 +49,26 @@ public class UsersApiClient extends BaseApiClient implements UsersClient {
     @NotNull
     @Override
     public UserJson createUser(String username, String password) {
-        execute(authApi.requestRegisterForm());
-        execute(authApi.register(username, password, password, null));
-        UserJson createdUser = execute(userdataApi.currentUser(username));
+        try {
+            execute(authApi.requestRegisterForm());
+            execute(authApi.register(
+                    username,
+                    password,
+                    password,
+                    ThreadSafeCookieStore.INSTANCE.getCookieValue("XSRF-TOKEN")));
 
-        return createdUser.withPassword(
-                defaultPassword
-        );
+            StopWatch sw = StopWatch.createStarted();
+            while (sw.getTime(TimeUnit.SECONDS) < 5) {
+                UserJson userJson = execute(userdataApi.currentUser(username));
+                if (userJson != null && userJson.id() != null) {
+                    return userJson.withEmptyTestData();
+                }
+                sleep(100);
+            }
+            throw new AssertionError("User creation timed out");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Step("Add income invitations to user: {targetUser}")

@@ -44,7 +44,6 @@ import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 import static java.util.Objects.requireNonNull;
 
-//ToDo ПОПРАВИТЬ ТОЛЬКО ДВА КЛАССА И МОЖНО ДЕЛАТЬ ПР!!!!
 @ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 

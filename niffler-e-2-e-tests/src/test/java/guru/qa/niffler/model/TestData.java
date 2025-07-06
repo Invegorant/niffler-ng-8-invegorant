@@ -9,7 +9,24 @@ public record TestData(String password,
                        List<UserJson> friends,
                        List<UserJson> incomeInvitations,
                        List<UserJson> outcomeInvitations) {
+
     public TestData(String password) {
         this(password, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    }
+
+    public List<String> friendsUsernames() {
+        return extractUsernames(friends);
+    }
+
+    public List<String> outcomeInvitationsUsernames() {
+        return extractUsernames(outcomeInvitations);
+    }
+
+    public List<String> incomeInvitationsUsernames() {
+        return extractUsernames(incomeInvitations);
+    }
+
+    private List<String> extractUsernames(List<UserJson> users) {
+        return users.stream().map(UserJson::username).toList();
     }
 }

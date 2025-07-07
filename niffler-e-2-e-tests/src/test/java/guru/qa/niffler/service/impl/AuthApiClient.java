@@ -1,10 +1,17 @@
 package guru.qa.niffler.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.core.RestClient;
-import io.qameta.allure.Step;
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
+import guru.qa.niffler.test.web.utils.OauthUtils;
+import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
+import retrofit2.Response;
 
 import javax.annotation.Nonnull;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AuthApiClient extends RestClient {
 
@@ -15,16 +22,42 @@ public class AuthApiClient extends RestClient {
         authApi = create(AuthApi.class);
     }
 
-    @Step("Register new user using REST API")
-    public void register(@Nonnull String csrf,
-                         @Nonnull String username,
-                         @Nonnull String password,
-                         @Nonnull String passwordSubmit) {
-        execute(authApi.register(csrf, username, password, passwordSubmit), 201);
-    }
+    @SneakyThrows
+    public String login(@Nonnull String username,
+                        @Nonnull String password) {
+        final String codeVerifier = OauthUtils.generateCodeVerifier();
+        final String codeChallenge = OauthUtils.generateCodeChallenge(codeVerifier);
+        final String redirectUri = CFG.frontUrl() + "authorized";
+        final String clientId = "client";
 
-    @Step("Get register form")
-    public void requestRegisterForm() {
-        execute(authApi.requestRegisterForm(), 200);
+        execute(authApi.authorize(
+                "code",
+                clientId,
+                "openid",
+                redirectUri,
+                codeChallenge,
+                "S256"
+        ), 302);
+
+        Response<Void> loginResponse =
+                authApi.login(
+                        ThreadSafeCookieStore.INSTANCE.getCookieValue("XSRF-TOKEN"),
+                        username,
+                        password
+                ).execute();
+        assertEquals(302, loginResponse.code());
+
+        String locationUrl = loginResponse.headers().get("Location");
+        String code = StringUtils.substringAfter(locationUrl, "code=");
+
+        JsonNode tokenResponses = execute(authApi.token(
+                code,
+                redirectUri,
+                codeVerifier,
+                "authorization_code",
+                clientId
+
+        ), 200);
+        return tokenResponses.get("id_token").asText();
     }
 }

@@ -71,6 +71,14 @@ public record UserJson(
         );
     }
 
+    public UserJson(String username) {
+        this(username, null);
+    }
+
+    public UserJson(String username, TestData testData) {
+        this(null, username, null, null, null, null, null, null, null, testData);
+    }
+
     public @Nonnull UserJson withPassword(String password) {
         return withTestData(
                 new TestData(

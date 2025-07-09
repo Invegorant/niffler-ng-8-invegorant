@@ -4,12 +4,16 @@ import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,5 +86,20 @@ public class SpendApiClient extends RestClient implements SpendClient {
     @Override
     public void removeCategory(CategoryJson category) {
         throw new UnsupportedOperationException("NYI method removeCategory");
+    }
+
+    @Step("Get all spends using REST API")
+    @Nonnull
+    public List<SpendJson> getSpends(String username,
+                                     @Nullable CurrencyValues filterCurrency,
+                                     @Nullable Date from,
+                                     @Nullable Date to) {
+        return execute(spendApi.getSpends(username, filterCurrency, from, to), 200);
+    }
+
+    @Step("Get all categories using REST API")
+    @Nonnull
+    public List<CategoryJson> getCategories(String username, boolean excludeArchived) {
+        return execute(spendApi.getCategories(username, excludeArchived), 200);
     }
 }

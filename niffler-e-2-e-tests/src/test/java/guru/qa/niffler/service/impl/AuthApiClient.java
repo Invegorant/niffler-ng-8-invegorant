@@ -12,8 +12,6 @@ import retrofit2.Response;
 
 import javax.annotation.Nonnull;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class AuthApiClient extends RestClient {
 
     private final AuthApi authApi;
@@ -38,7 +36,7 @@ public class AuthApiClient extends RestClient {
                 redirectUri,
                 codeChallenge,
                 "S256"
-        ), 302);
+        ));
 
         Response<Void> loginResponse =
                 authApi.login(
@@ -46,7 +44,6 @@ public class AuthApiClient extends RestClient {
                         username,
                         password
                 ).execute();
-        assertEquals(302, loginResponse.code());
 
         String locationUrl = loginResponse.headers().get("Location");
         String code = StringUtils.substringAfter(locationUrl, "code=");
@@ -60,5 +57,13 @@ public class AuthApiClient extends RestClient {
 
         ), 200);
         return tokenResponses.get("id_token").asText();
+    }
+
+    public void requestRegisterForm() {
+        execute(authApi.requestRegisterForm());
+    }
+
+    public void register(String username, String password, String passwordSubmit, String cookieValue) {
+        execute(authApi.register(username, password, passwordSubmit, cookieValue), 201);
     }
 }

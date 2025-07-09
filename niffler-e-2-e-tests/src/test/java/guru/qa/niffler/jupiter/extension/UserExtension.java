@@ -3,7 +3,7 @@ package guru.qa.niffler.jupiter.extension;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.impl.UsersApiClient;
+import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -20,7 +20,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
     private static final String defaultPassword = DEFAULT_PASSWORD;
 
-    private final UsersClient usersClient = new UsersApiClient();
+    private final UsersClient usersClient = new UsersDbClient();
 
     @Nullable
     public static UserJson createdUser() {
@@ -42,7 +42,7 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
         final ExtensionContext context = context();
         context.getStore(NAMESPACE).put(
                 context.getUniqueId(),
-                testUser
+                testUser.withPassword(defaultPassword)
         );
     }
 

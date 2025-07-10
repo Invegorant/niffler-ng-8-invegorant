@@ -3,11 +3,13 @@ package guru.qa.niffler.test.web.utils;
 import lombok.SneakyThrows;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+@ParametersAreNonnullByDefault
 public class OauthUtils {
 
     private static final SecureRandom secureRandom = new SecureRandom();

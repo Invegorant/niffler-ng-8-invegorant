@@ -48,4 +48,8 @@ public class MainPage extends BasePage<MainPage> {
         img.is(image, Duration.ofSeconds(5));
         return this;
     }
+
+    public void checkMainPageIsOpened() {
+        checkStatisticsIsPresent();
+    }
 }

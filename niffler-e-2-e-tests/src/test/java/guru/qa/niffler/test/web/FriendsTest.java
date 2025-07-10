@@ -1,5 +1,6 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
@@ -13,74 +14,70 @@ import org.junit.jupiter.api.Test;
 public class FriendsTest extends AbstractTest {
 
     @Test
+    @ApiLogin
     @User(friends = 1)
     @DisplayName("Друзья - Проверка наличия друга в списке друзей")
     void friends_friendShouldBePresentInFriendsTable(UserJson user) {
-        openLoginPage()
-                .doLogin(user.username(), user.testData().password())
+        new MainPage()
                 .getHeader()
                 .toFriendsPage()
                 .checkFriendIsPresentInTable(user.testData().friends().getFirst().username());
     }
 
     @Test
+    @ApiLogin
     @User
     @DisplayName("Друзья - Проверка пустого списка друзей")
-    void friends_friendTableShouldBeEmptyForNewUser(UserJson user) {
-        openLoginPage()
-                .doLogin(user.username(), user.testData().password())
+    void friends_friendTableShouldBeEmptyForNewUser() {
+        new MainPage()
                 .getHeader()
                 .toFriendsPage()
                 .checkFriendsTableIsEmpty();
     }
 
     @Test
+    @ApiLogin
     @User(incomeInvitations = 1)
     @DisplayName("Друзья - Проверка наличия входящего запроса в друзья от другого пользователя")
     void friends_incomeInvitationBePresentInFriendsTable(UserJson user) {
-        openLoginPage()
-                .doLogin(user.username(), user.testData().password())
+        new MainPage()
                 .getHeader()
                 .toFriendsPage()
                 .checkFriendRequestFromUser(user.testData().incomeInvitations().getFirst().username());
     }
 
     @Test
+    @ApiLogin
     @User(outcomeInvitations = 1)
     @DisplayName("Друзья - Проверка наличия исходящего запроса в друзья")
     void friends_outcomeInvitationBePresentInAllPeoplesTableTable(UserJson user) {
-        openLoginPage()
-                .doLogin(user.username(), user.testData().password())
+        new MainPage()
                 .getHeader()
                 .toAllPeoplesPage()
                 .searchRequestByUsername(user.username())
                 .checkOutcomeRequestToUser(user.testData().outcomeInvitations().getFirst().username());
     }
 
-    @User(
-            incomeInvitations = 1
-    )
     @Test
+    @ApiLogin
+    @User(incomeInvitations = 1)
     @DisplayName("Друзья - Проверка возможности принятия в друзья")
     void friends_userCanAcceptIncomeFriendInvitation(UserJson user) {
-        MainPage mainPage = login(user);
         String incomeUsername = user.testData().incomeInvitations().getFirst().username();
-        mainPage
+        new MainPage()
                 .getHeader()
                 .toFriendsPage()
                 .acceptIncomingRequestFrom(incomeUsername)
                 .checkFriendIsPresentInTable(incomeUsername);
     }
 
-    @User(
-            incomeInvitations = 1
-    )
     @Test
+    @ApiLogin
+    @User(incomeInvitations = 1)
     @DisplayName("Друзья - Проверка возможности отказа принятия в друзья")
     void friends_userCanDeclineIncomeFriendInvitation(UserJson user) {
-        MainPage mainPage = login(user);
         String incomeUsername = user.testData().incomeInvitations().getFirst().username();
-        mainPage
+        new MainPage()
                 .getHeader()
                 .toFriendsPage()
                 .declineIncomingRequestFrom(incomeUsername)

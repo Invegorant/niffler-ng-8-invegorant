@@ -10,10 +10,14 @@ import io.qameta.allure.Step;
 import org.apache.commons.lang3.time.StopWatch;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static guru.qa.niffler.model.FriendshipStatus.INVITE_RECEIVED;
+import static guru.qa.niffler.model.FriendshipStatus.INVITE_SENT;
 import static guru.qa.niffler.test.web.AbstractTest.DEFAULT_PASSWORD;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.lang.Thread.sleep;
@@ -46,7 +50,7 @@ public class UsersApiClient extends RestClient implements UsersClient {
 
             StopWatch sw = StopWatch.createStarted();
             while (sw.getTime(TimeUnit.SECONDS) < 5) {
-                UserJson userJson = execute(userdataApi.currentUser(username));
+                UserJson userJson = currentUser(username);
                 if (userJson != null && userJson.id() != null) {
                     return userJson.withEmptyTestData();
                 }
@@ -110,5 +114,39 @@ public class UsersApiClient extends RestClient implements UsersClient {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
         return execute(userdataApi.allUsers(username, searchQuery), SC_OK);
+    }
+
+    @Step("Get current user using API")
+    @Nonnull
+    public UserJson currentUser(@Nonnull String username) {
+        return execute(userdataApi.currentUser(username), SC_OK);
+    }
+
+    @Step("Get user's friends using API")
+    @Nonnull
+    public List<UserJson> getFriends(@Nonnull String username) {
+        List<UserJson> resp = execute(userdataApi.friends(username, null), SC_OK);
+        return !resp.isEmpty() ? resp : Collections.emptyList();
+    }
+
+    @Step("Get user's income invitations using API")
+    @Nonnull
+    public List<UserJson> getIncomeInvitations(@Nonnull String username) {
+        List<UserJson> friends = getFriends(username);
+
+        return friends.stream()
+                .filter(userJson -> userJson.friendshipStatus().equals(INVITE_RECEIVED))
+                .toList();
+    }
+
+    @Step("Get user's outcome invitations using API")
+    @Nonnull
+    public List<UserJson> getOutcomeInvitations(@Nonnull String username) {
+        List<UserJson> allPeople = allUsers(username, null);
+
+        return allPeople.stream()
+                .filter(userJson -> userJson.friendshipStatus() != null)
+                .filter(userJson -> userJson.friendshipStatus().equals(INVITE_SENT))
+                .toList();
     }
 }

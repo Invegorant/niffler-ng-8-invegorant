@@ -1,9 +1,10 @@
 package guru.qa.niffler.test.web.alert;
 
 import guru.qa.niffler.common.messages.ApplicationWarnings;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.test.web.AbstractTest;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
@@ -16,30 +17,33 @@ public class ProfilePageAlertTest extends AbstractTest {
 
     @User
     @Test
-    void profileAlert_shouldDisplaySuccessAlertWhenProfileNameUpdated(UserJson user) {
-        login(user)
+    @ApiLogin
+    void profileAlert_shouldDisplaySuccessAlertWhenProfileNameUpdated() {
+        new MainPage()
                 .getHeader()
                 .toProfilePage()
                 .updateName("NewUserName")
                 .checkAlertMessage(ApplicationWarnings.PROFILE_UPDATED.getVal());
     }
 
-    @User()
     @Test
-    void profileAlert_shouldDisplaySuccessAlertWhenCategoryAdded(UserJson user) {
+    @ApiLogin
+    @User
+    void profileAlert_shouldDisplaySuccessAlertWhenCategoryAdded() {
         final String categoryName = randomCategoryName();
-        login(user)
+        new MainPage()
                 .getHeader()
                 .toProfilePage()
                 .addCategory(categoryName)
                 .checkAlertMessage(String.format(ApplicationWarnings.CATEGORY_ADDED.getVal(), categoryName));
     }
 
-    @User()
     @Test
-    void profileAlert_shouldDisplayErrorAlertWhenCategoryNameTooLong(UserJson user) {
+    @ApiLogin
+    @User
+    void profileAlert_shouldDisplayErrorAlertWhenCategoryNameTooLong() {
         final String categoryName = randomCategoryName();
-        login(user)
+        new MainPage()
                 .getHeader()
                 .toProfilePage()
                 .addCategory(categoryName)

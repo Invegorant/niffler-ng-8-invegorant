@@ -13,7 +13,8 @@ import java.util.List;
 public interface GatewayApi {
 
     @GET("api/categories/all")
-    Call<List<CategoryJson>> allCategories(@Header("Authorization") String bearerToken);
+    Call<List<CategoryJson>> allCategories(@Header("Authorization") String bearerToken,
+                                           @Query("excludeArchived") boolean excludeArchived);
 
     @POST("api/categories/add")
     Call<CategoryJson> addCategory(@Header("Authorization") String bearerToken,

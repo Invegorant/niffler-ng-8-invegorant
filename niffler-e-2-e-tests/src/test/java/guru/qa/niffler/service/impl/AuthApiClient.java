@@ -5,9 +5,9 @@ import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.core.CodeInterceptor;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.test.web.utils.OauthUtils;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
@@ -45,11 +45,8 @@ public class AuthApiClient extends RestClient {
                         password
                 ).execute();
 
-        String locationUrl = loginResponse.headers().get("Location");
-        String code = StringUtils.substringAfter(locationUrl, "code=");
-
         JsonNode tokenResponses = execute(authApi.token(
-                code,
+                ApiLoginExtension.getCode(),
                 redirectUri,
                 codeVerifier,
                 "authorization_code",

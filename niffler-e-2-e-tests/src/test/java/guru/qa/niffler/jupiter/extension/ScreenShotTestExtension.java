@@ -77,32 +77,32 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
 
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-        ScreenShotTest anno = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
-
-        if (anno.rewriteExpected()) {
-            String path = String.format("niffler-e-2-e-tests/src/test/resources/%s", anno.value());
-            try {
-                ImageIO.write(
-                        getActual(), "png",
-                        new File(path).getAbsoluteFile()
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+        if (screenShotTest != null) {
+            if (screenShotTest.rewriteExpected()) {
+                final BufferedImage actual = getActual();
+                if (actual != null) {
+                    ImageIO.write(
+                            actual,
+                            "png",
+                            new File("src/test/resources/" + screenShotTest.value())
+                    );
+                }
             }
-        }
 
-        if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
-            ScreenDif screenDif = new ScreenDif(
-                    "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getExpected())),
-                    "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getActual())),
-                    "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getDiff()))
-            );
+            if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
+                ScreenDif screenDif = new ScreenDif(
+                        "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getExpected())),
+                        "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getActual())),
+                        "data:image/png;base64," + ENCODER.encodeToString(imageToBytes(getDiff()))
+                );
 
-            Allure.addAttachment(
-                    "Screenshot diff",
-                    "application/vnd.allure.image.diff",
-                    OBJECT_MAPPER.writeValueAsString(screenDif)
-            );
+                Allure.addAttachment(
+                        "Screenshot diff",
+                        "application/vnd.allure.image.diff",
+                        OBJECT_MAPPER.writeValueAsString(screenDif)
+                );
+            }
         }
         throw throwable;
     }

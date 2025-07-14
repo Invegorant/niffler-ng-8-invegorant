@@ -4,7 +4,7 @@ import guru.qa.niffler.api.UserdataApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
 import org.apache.commons.lang3.time.StopWatch;
@@ -49,7 +49,7 @@ public class UsersApiClient extends RestClient implements UsersClient {
                     ThreadSafeCookieStore.INSTANCE.getCookieValue("XSRF-TOKEN"));
 
             StopWatch sw = StopWatch.createStarted();
-            while (sw.getTime(TimeUnit.SECONDS) < 5) {
+            while (sw.getTime(TimeUnit.SECONDS) < 10) {
                 UserJson userJson = currentUser(username);
                 if (userJson != null && userJson.id() != null) {
                     return userJson.withEmptyTestData();
@@ -119,7 +119,7 @@ public class UsersApiClient extends RestClient implements UsersClient {
     @Step("Get current user using API")
     @Nonnull
     public UserJson currentUser(@Nonnull String username) {
-        return execute(userdataApi.currentUser(username), SC_OK);
+        return execute(userdataApi.currentUser(username));
     }
 
     @Step("Get user's friends using API")

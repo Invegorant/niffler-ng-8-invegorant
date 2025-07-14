@@ -1,12 +1,14 @@
-package guru.qa.niffler.test.api;
+package guru.qa.niffler.test.rest;
 
+import guru.qa.niffler.jupiter.annotation.meta.RestTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.AuthApiClient;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@RestTest
 public class OauthTest {
 
     private final AuthApiClient authApiClient = new AuthApiClient();

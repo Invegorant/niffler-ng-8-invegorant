@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Disabled;

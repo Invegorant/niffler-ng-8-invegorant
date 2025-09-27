@@ -41,6 +41,9 @@ public interface Config {
     }
 
     @Nonnull
+    String allureDockerServiceUrl();
+
+    @Nonnull
     String currencyGrpcAddress();
 
     default int currencyGrpcPort() {

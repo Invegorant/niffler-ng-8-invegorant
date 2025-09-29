@@ -17,5 +17,17 @@
         ]
       }
     }
+  },
+  "firefox": {
+    "default": "latest",
+    "versions": {
+      "latest": {
+        "image": "selenoid/firefox:latest",
+        "port": "4444",
+        "env": [
+          "TZ=Europe/Moscow"
+        ]
+      }
+    }
   }
 }
